@@ -13,6 +13,7 @@ def predict(sentence):
         return "positive"
 # Create your views here.
 def index(request):
+    # return HttpResponse("Hello, world. You're at the polls index.")
     if request.method == "GET":
         template = loader.get_template('index.html')
         context = {
