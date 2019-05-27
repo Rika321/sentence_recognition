@@ -12,6 +12,8 @@ from .models import *
 from .ml_model import *
 from django import forms
 import os
+import shutil
+
 
 filename = 'data/labeled_collection.tsv'
 cv_model_name = "data/cv.joblib"
@@ -55,7 +57,7 @@ def simple_train(request):
 
 def simple_add(request):
     template = loader.get_template('index.html')
-    if request.method == 'POST':
+    if request.method == 'POST' and request.POST.get('sentence') != "":
         sentence = request.POST.get('sentence')
         label    = request.POST.get('label')
         # print(sentence)
@@ -112,6 +114,14 @@ def train_mode(request):
 
 def index(request):
     if request.method == "GET":
+        try:
+            os.makedirs("data")
+        except OSError:
+            shutil.rmtree("data")
+            os.makedirs("data")
+            # print ("Creation of the directory %s failed" % path)
+
+
         template = loader.get_template('index.html')
         context = {
             'mode' : 'eval_mode',

@@ -31,7 +31,7 @@ def transfer_labeled_tsvfile(f):
         with open('data/labeled_collection.tsv', 'a+') as destination:
             for line in f:
                 line = line.decode("utf-8")
-                text = line.strip()
+                # text = line.strip()
                 destination.write(line)
                 counter += 1
         return counter

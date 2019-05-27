@@ -134,9 +134,12 @@ def read_tsv(fname):
     labels = []
     with open(fname, 'r') as tf:
         for line in tf:
-            (label,text) = line.strip().split("\t")
-            labels.append(label)
-            data.append(text)
+            try:
+                (label,text) = line.strip().split("\t")
+                labels.append(label)
+                data.append(text)
+            except:
+                print(line)
     return data, labels
 
 if __name__ == "__main__":
