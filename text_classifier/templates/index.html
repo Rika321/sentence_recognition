@@ -4,19 +4,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>NLP prediction</title>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NLP prediction</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="{% static "text_classifier/styles/main.css" %}">
-  <!-- bootstrap -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="{% static "text_classifier/styles/main.css" %}">
+<!-- bootstrap -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+
 </head>
-
-
 
 
 <header>
@@ -32,8 +32,9 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#evaluate">EVALUATE</a></li>
-            <li><a href="#train">TRAIN</a></li>
+            <li><a id = "eval_mode"  href = "{% url 'text_classifier:index' %}">EVALUATE</a></li>
+            <li><a id = "train_mode" href = "{% url 'text_classifier:train_mode' %}">TRAIN</a></li>
+            <!-- <li><a id = "train_mode" href = "{% url 'text_classifier:train_mode' %}">TRAIN_Large</a></li> -->
           </ul>
         </div>
       </div>
@@ -44,33 +45,87 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <form class="form-horizontal" action="{% url 'text_classifier:results' %}" method="post">
-            <!-- <legend align="center"> Language identification</legend> -->
-            <br/>
-            <br/>
-            <div  class="form-group">
-              {% csrf_token %}
-              <label for="{{form.phrase.id_for_label}}">Type a review</label> <br/>
-              <input id="input_text" type="text" name="sentence" value="{{ sentence_text }}">
-              <button type="submit" class="btn btn-primary">Detect</button>
-            </div>
 
-            {% if label %}
+
+          {% if mode == 'train_mode' %}
               <div  class="form-group">
-                <p> Analyzing sentence: {{sentence}}</p>
-                <p> This sentence is : {{label}}</p>
-                <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
-                <a class="btn btn-primary" href="{% url 'text_classifier:index'%}">main page</a>
+                  <br/>
+                  {% if total_sample %}
 
-              </div>
-            {% else %}
-              <div  class="form-group">
-                <img src="{% static "text_classifier/black.jpg" %}" alt="My image">
-              </div>
-            {% endif %}
+                    <p>we have {{ total_sample }} examples!</p>
+                    <form action="{% url 'text_classifier:simple_train' %}" method="post" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-primary">TRAIN!</button>
+                    </form>
+
+                  {% else %}
+                    <p>PLZ add more examples!!!</p>
+                  {% endif %}
+
+                  {% if train_acc %}
+                    <p>got training accuracy:  {{ train_acc }} </p>
+                  {% endif %}
+                  <br/>
 
 
-        </form>
+                  <form action="{% url 'text_classifier:simple_add' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="{{form.phrase.id_for_label}}">Type a review</label><br/>
+                        <input id="input_text" type="text" name="sentence" value="{{ sentence_text }}"><br/>
+                        <label for="{{form.phrase.id_for_label}}">Select a label</label>
+                        <select name="label">
+                          <option value="NEGATIVE">NEGATIVE</option>
+                          <option value="POSITIVE">POSITIVE</option>
+                        </select>
+                        <br/>
+                        <button type="submit" class="btn btn-primary">ADD</button>
+                    </form>
+
+                    <br/>
+
+                     <form action="{% url 'text_classifier:simple_upload' %}" method="post" enctype="multipart/form-data">
+                       {% csrf_token %}
+                       <input type="file" name="labeled_tsv_file">
+                       <button type="submit" class="btn btn-primary">Upload</button>
+                     </form>
+                     {% if read_sample %}
+                       <p>read {{ read_sample }} examples</p>
+                     {% endif %}
+                     <p><a href="{% url 'text_classifier:train_mode' %}">Return to home</a></p>
+                 </div>
+
+          {% elif mode == 'eval_mode' %}
+              <form class="form-horizontal" action="{% url 'text_classifier:results' %}" method="post">
+                  <br/>
+                  <br/>
+                  <div  class="form-group">
+                    {% csrf_token %}
+                    <label for="{{form.phrase.id_for_label}}">Type a review</label> <br/>
+                    <input id="input_text" type="text" name="sentence" value="{{ sentence_text }}">
+                    <button type="submit" class="btn btn-primary">Detect</button>
+                  </div>
+              </form>
+         {% else %}
+             <p> Analyzing Bag: {{mode}}</p>
+          {% endif %}
+
+
+        <form class="form-horizontal">
+        {% if label %}
+          <div  class="form-group">
+            <p> Analyzing sentence: {{sentence}}</p>
+            <p> This sentence is : {{label}}</p>
+            <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
+            <a class="btn btn-primary" href="{% url 'text_classifier:index'%}">main page</a>
+
+          </div>
+        {% else %}
+          <div  class="form-group">
+            <img src="{% static "text_classifier/black.jpg" %}" alt="My image">
+          </div>
+        {% endif %}
+       </form>
+
       </div>
     </div>
   </div><!-- /container -->
