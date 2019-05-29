@@ -5,7 +5,7 @@ from django.core.files.storage import FileSystemStorage
 def count_labeled_examples():
     try:
         counter = 0
-        with open('data/labeled_collection.tsv', 'r') as destination:
+        with open('data/labeled_collection.tsv', 'r', encoding='UTF-8') as destination:
             for line in destination:
                 counter += 1
         return counter
@@ -16,7 +16,7 @@ def count_labeled_examples():
 def transfer_one_line(sentence, label):
     try:
         counter = 0
-        with open('data/labeled_collection.tsv', 'a+') as destination:
+        with open('data/labeled_collection.tsv', 'a+', encoding='UTF-8') as destination:
             line = str(label) + "\t" + str(sentence) + "\n"
             destination.write(line)
             counter += 1
@@ -28,9 +28,9 @@ def transfer_one_line(sentence, label):
 def transfer_labeled_tsvfile(f):
     try:
         counter = 0
-        with open('data/labeled_collection.tsv', 'a+') as destination:
+        with open('data/labeled_collection.tsv', 'a+', encoding='UTF-8') as destination:
             for line in f:
-                line = line.decode("utf-8")
+                line = line.decode("UTF-8")
                 # text = line.strip()
                 destination.write(line)
                 counter += 1
