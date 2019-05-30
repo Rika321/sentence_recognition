@@ -13,6 +13,7 @@ from .ml_model import *
 from django import forms
 import os
 import shutil
+from django.http import JsonResponse
 
 
 filename = 'data/labeled_collection.tsv'
@@ -114,11 +115,11 @@ def train_mode(request):
 
 def index(request):
     if request.method == "GET":
-        try:
-            os.makedirs("data")
-        except OSError:
-            shutil.rmtree("data")
-            os.makedirs("data")
+        # try:
+        #     os.makedirs("data")
+        # except OSError:
+        #     shutil.rmtree("data")
+        #     os.makedirs("data")
             # print ("Creation of the directory %s failed" % path)
 
 
@@ -151,3 +152,10 @@ def results(request):
         "label": label
     }
     return HttpResponse(template.render(context, request))
+
+def explain(request):
+    sentence = request.POST.get('sentence')
+    print(sentence)
+    result = {'food':-0.8,'is':0.1,'very':-0.5,\
+    'good':3,'what':1,'bad':-2}
+    return JsonResponse(result)

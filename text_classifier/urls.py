@@ -12,4 +12,5 @@ urlpatterns = [
     path('simple_add/', views.simple_add, name = 'simple_add'),
     path('simple_train/', views.simple_train, name = 'simple_train'),
     path('results/', views.results, name='results'),
+    path('explain', views.explain, name='explain')
 ]

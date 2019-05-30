@@ -143,7 +143,7 @@ def read_unlabeled(tarfname, sentiment):
 def read_tsv(fname):
     data = []
     labels = []
-    with open(fname, 'r') as tf:
+    with open(fname, 'r', encoding='UTF-8') as tf:
         for line in tf:
             try:
                 (label,text) = line.strip().split("\t")

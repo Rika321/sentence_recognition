@@ -1,12 +1,12 @@
 .navbar {
-  margin-bottom: 0;
-  background-color: #f4511e;
+  /*margin-bottom: 0;*/
+  background-color: ##f8f8f8;
   z-index: 9999;
-  border: 0;
+  /*border: 0;*/
   font-size: 12px !important;
   line-height: 1.42857143 !important;
   letter-spacing: 4px;
-  border-radius: 0;
+  /*border-radius: 0;*/
 }
 
 .navbar li a, .navbar .navbar-brand {
@@ -26,4 +26,17 @@
 
 .errorlist{
   color:#F00;
+}
+
+.explain-bar {
+  margin: 20px 0px;
+}
+
+.plus_minus_sign {
+  padding-right: 10px;
+}
+
+canvas {
+  /*border:2px solid #000000;*/
+  vertical-align: middle;
 }
