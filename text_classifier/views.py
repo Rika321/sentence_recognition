@@ -156,5 +156,6 @@ def results(request):
 def explain(request):
     sentence = request.POST.get('sentence')
     print(sentence)
-    result = {'food':-0.8,'is':0.1,'good':3}
+    result = {'food':-0.8,'is':0.1,'very':-0.5,\
+    'good':3,'what':1,'bad':-2}
     return JsonResponse(result)
