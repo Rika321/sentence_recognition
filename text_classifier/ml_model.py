@@ -80,6 +80,10 @@ def evaluate(X, yt, cls, name='data'):
     print("  Accuracy on %s  is: %s" % (name, acc))
 
 
+def get2Gram(sentence):
+    pass
+
+
 def predict(sentence, cv_model_name, sk_model_name, lr_model_name):
     X = [sentence]
     label_dict = {0:"NEGATIVE", 1:"POSITIVE"}
@@ -89,6 +93,13 @@ def predict(sentence, cv_model_name, sk_model_name, lr_model_name):
         lr = load(lr_model_name)
         X = cv.transform(X)
         X = sk.transform(X)
+        print(sentence.split(" "))
+        for word in sentence.split(" "):
+            print(word)
+            word_ = cv.transform([word])
+            word_ = sk.transform(word_)
+            score = lr.decision_function(word_) - lr.fit_intercept
+            print("processs word:", word, "score:", score)
         return label_dict[lr.predict(X)[0]]
     except Exception as e:
         print(e)
@@ -157,5 +168,6 @@ if __name__ == "__main__":
     select_feature(sentiment, sk_model_name)
     train_classifier( sentiment.trainX_select, sentiment.trainy,lr_model_name)
 
-    sentence = "food is very bad"
+    #sentence = "food is very bad"
+    sentence = "service is very awesome"
     print("prediction result:", predict(sentence, cv_model_name, sk_model_name,lr_model_name))
