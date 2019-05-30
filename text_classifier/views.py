@@ -146,16 +146,34 @@ def results(request):
     # if request.method == 'POST':
     sentence = request.POST.get('sentence')
     template = loader.get_template('index.html')
-    label = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
+    label, score = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
     context = {
         "sentence": sentence,
-        "label": label
+        "label": str(label),
+        "score": float(score),
     }
+    request.session['sentence'] = sentence
     return HttpResponse(template.render(context, request))
 
+    # <ul>
+    # {% for key, value in choices.items %}
+    #   <li>{{key}} - {{value}}</li>
+    #  {% endfor %}
+    # </ul>
+
+def plot(request):
+    sentence = request.session['sentence'] #request.POST.get('sentence')
+    print("sentence is",sentence)
+    result = explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name)
+    print(result)
+    return JsonResponse(result)
+
 def explain(request):
-    sentence = request.POST.get('sentence')
-    print(sentence)
-    result = {'food':-0.8,'is':0.1,'very':-0.5,\
-    'good':3,'what':1,'bad':-2}
+    sentence = request.session['sentence'] #request.POST.get('sentence')
+    print("sentence is",sentence)
+    result = explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name)
+    print(result)
+    # print(request.POST.get('gram_dict'))
+    # result = {'food':-0.8,'is':0.1,'very':-0.5,\
+    #  'good':3,'what':1,'bad':-2}
     return JsonResponse(result)

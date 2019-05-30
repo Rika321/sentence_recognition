@@ -11,6 +11,7 @@ from sklearn.model_selection import PredefinedSplit
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn import metrics
 from joblib import dump, load
+from collections import defaultdict
 import random
 app = Flask(__name__)
 
@@ -81,7 +82,39 @@ def evaluate(X, yt, cls, name='data'):
 
 
 def get2Gram(sentence):
-    pass
+    result = []
+    word_list = sentence.split(" ")
+    for word in word_list:
+        result.append([word])
+    for i in range(len(word_list)-1):
+        result.append([word_list[i], word_list[i+1]])
+    return result
+
+
+def explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name):
+    try:
+        cv = load(cv_model_name)
+        sk = load(sk_model_name)
+        lr = load(lr_model_name)
+        grams = get2Gram(sentence)
+        gram_dict = defaultdict(float)
+        for gram in grams:
+            gram_ = cv.transform(gram)
+            gram_ = sk.transform(gram_)
+            score = lr.decision_function(gram_)[0] - lr.fit_intercept
+            gram_str = ""
+            for w in gram:
+                if gram_str == "":
+                    gram_str += w
+                else:
+                    gram_str += " "+w
+            gram_dict[gram_str] = score
+        print(sentence)
+        return dict(gram_dict)
+    except Exception as e:
+        print("ERROR",e)
+        return None
+
 
 
 def predict(sentence, cv_model_name, sk_model_name, lr_model_name):
@@ -93,17 +126,10 @@ def predict(sentence, cv_model_name, sk_model_name, lr_model_name):
         lr = load(lr_model_name)
         X = cv.transform(X)
         X = sk.transform(X)
-        print(sentence.split(" "))
-        for word in sentence.split(" "):
-            print(word)
-            word_ = cv.transform([word])
-            word_ = sk.transform(word_)
-            score = lr.decision_function(word_) - lr.fit_intercept
-            print("processs word:", word, "score:", score)
-        return label_dict[lr.predict(X)[0]]
+        return [label_dict[lr.predict(X)[0]], lr.decision_function(X)]
     except Exception as e:
         print(e)
-        return "NEGATIVE" if random.random() > 0.5 else "POSITIVE"
+        return ["NEGATIVE",None] if random.random() > 0.5 else ["POSITIVE",None]
 
 
 
