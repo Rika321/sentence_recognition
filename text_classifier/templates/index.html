@@ -113,7 +113,7 @@
         <form class="form-horizontal">
         {% if label %}
           <div  class="form-group">
-            <p> Analyzing sentence: {{sentence}}</p>
+            <p id='sentence'> Analyzing sentence: {{sentence}}</p>
             <p> This sentence is : {{label}}</p>
             <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
             <a class="btn btn-primary" id="explain_btn">explain</a>
@@ -124,6 +124,19 @@
               </div>
               <div class="explain-bar" id="bar_minus">
               <img class="plus_minus_sign" width="25px" vertical-align="middle" src={% static "text_classifier/img/minus_sign.png" %}>
+              </div>
+              <div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Color</th>
+                      <th>Feature</th>
+                      <th>Contribution</th>
+                    </tr>
+                  </thead>
+                  <tbody id="explain_table">
+                  </tbody>
+                </table>
               </div>
             </div>
 

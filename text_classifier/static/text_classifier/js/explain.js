@@ -47,21 +47,36 @@ $.ajaxSetup({
 })
 
 var send = {
-	'sentence': 'good'
-};
+	sentence: $("#sentence").text().split(": ")[1]
+}
 
 var sorted_data;
 
 var barColor = {};
 
+var barPos = {};
+
 var compare = function(a,b) {
-	if(Math.abs(a[1])<Math.abs(b[1]))
-		return -1;
+	if(a[1]>0 && b[1]>0)
+		if(a[1]>b[1])
+			return 1;
+		else
+			return -1;
+	else if(a[1]<0 && b[1]<0)
+		if(a[1]<b[1])
+			return 1;
+		else
+			return -1;
 	else
-		return 1;
+		if(a[1]>b[1])
+			return 1;
+		else
+			return -1;
 }
 
 $(document).on("click", "#explain_btn", function(e) {
+	if($("#bar_plus").children("canvas").length>0)
+		return;
 	$.ajax({
 		url: "../explain",
 		// headers: headers,
@@ -75,8 +90,8 @@ $(document).on("click", "#explain_btn", function(e) {
 				sorted_data[i] = new Array(keys[i],data[keys[i]]);
 			}
 			sorted_data = sorted_data.sort(compare);
-			drawBar(sorted_data);
-			//TODO
+			drawBar();
+			drawTable();
 		},
 	    beforeSend: function(xhr, settings) {
 	        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url))
@@ -91,7 +106,7 @@ function getColorByBaiFenBi(bili){
     var r=0;
     var g=0;
     var b=0;
- 
+
     if ( bili < 50 ) { 
         g = one * bili;
         r=255;
@@ -103,12 +118,11 @@ function getColorByBaiFenBi(bili){
     r = parseInt(r);
     g = parseInt(g);
     b = parseInt(b);
- 
+
     return "rgb("+r+","+g+","+b+")";
-        
 }
 
-function drawBar(sorted_data) {
+function drawBar() {
 	var barPlus = document.createElement("canvas");
 	barPlus.innerHTML = "Your browser does not support the HTML5 canvas tag."
 	barPlus.width = "600"
@@ -154,10 +168,29 @@ function drawBar(sorted_data) {
 		ctx[id].fillStyle=getColorByBaiFenBi(part);
 		barColor[a[0]] = ctx[id].fillStyle;
 		ctx[id].fillRect(start[id],0,len,25);
+		barPos[a[0]] = start[id]+len/2;
 		ctx[id].fillStyle="#000000";
 		ctx[id].rect(start[id],0,len,25);
 		ctx[id].stroke();
 		start[id] += len
 	}
 	$(".explain").show();
+}
+
+function drawTable() {
+	el = $("#explain_table");
+	for(i=sorted_data.length-1;i>=0;i--) {
+		var color = document.createElement("canvas");
+		color.innerHTML = "Your browser does not support the HTML5 canvas tag."
+		color.width = "25"
+		color.height = "25"
+		ctx = color.getContext("2d");
+		ctx.fillStyle = barColor[sorted_data[i][0]];
+		ctx.fillRect(0,0,25,25);
+		var tr = document.createElement("tr");
+		$(tr).append("<td></td><td>"+sorted_data[i][0]+"</td><td>"+
+			sorted_data[i][1]+"</td>")
+		$(tr).children("td")[0].append(color);
+		el.append(tr);
+	}
 }
