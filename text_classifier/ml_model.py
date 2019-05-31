@@ -82,35 +82,52 @@ def evaluate(X, yt, cls, name='data'):
 
 
 def get2Gram(sentence):
-    result = []
+    gram_freq = defaultdict(int)
     word_list = sentence.split(" ")
     for word in word_list:
-        result.append([word])
+        gram_freq[word] += 1
     for i in range(len(word_list)-1):
-        result.append([word_list[i], word_list[i+1]])
-    return result
+        word = str(word_list[i])+ " " +str(word_list[i+1])
+        gram_freq[word] += 1
+    return gram_freq
 
 
-def explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name):
+def explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name, freq = True):
     try:
         cv = load(cv_model_name)
         sk = load(sk_model_name)
         lr = load(lr_model_name)
-        grams = get2Gram(sentence)
+        gram_freq = get2Gram(sentence)
         gram_dict = defaultdict(float)
-        for gram in grams:
-            gram_ = cv.transform(gram)
-            gram_ = sk.transform(gram_)
-            score = lr.decision_function(gram_)[0] - lr.fit_intercept
-            gram_str = ""
-            for w in gram:
-                if gram_str == "":
-                    gram_str += w
-                else:
-                    gram_str += " "+w
-            gram_dict[gram_str] = score
-        print(sentence)
+        for word,freq in gram_freq.items():
+            word_ = cv.transform([word])
+            word_ = sk.transform(word_)
+            score = 0 #lr.decision_function(word_)[0] - lr.fit_intercept
+            for row, col in zip(*word_.nonzero()):
+                score += word_[row, col]*lr.coef_[row, col]
+            if freq:
+                gram_dict[word] = [score, freq]
+            else:
+                gram_dict[word] = score
         return dict(gram_dict)
+    except Exception as e:
+        print("ERROR",e)
+        return None
+
+
+def update_model(grams, cv_model_name, sk_model_name, lr_model_name):
+    try:
+        cv = load(cv_model_name)
+        sk = load(sk_model_name)
+        lr = load(lr_model_name)
+        for [word,score] in grams:
+            if len(word.split()) == 1:
+                X_ = cv.transform([word])
+                X = sk.transform(X_)
+                for row, col in zip(*X.nonzero()):
+                    val = X[row, col]
+                    lr.coef_[row, col] = score/X[row, col]
+        dump(lr, lr_model_name)
     except Exception as e:
         print("ERROR",e)
         return None

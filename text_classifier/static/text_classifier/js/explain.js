@@ -102,12 +102,11 @@ $(document).on("click", "#explain_btn", function(e) {
 
 
 function getColorByBaiFenBi(bili){
-    var one = (255+255) / 100;  
+    var one = (255+255) / 100;
     var r=0;
     var g=0;
     var b=0;
-
-    if ( bili < 50 ) { 
+    if ( bili < 50 ) {
         g = one * bili;
         r=255;
     }
@@ -118,7 +117,6 @@ function getColorByBaiFenBi(bili){
     r = parseInt(r);
     g = parseInt(g);
     b = parseInt(b);
-
     return "rgb("+r+","+g+","+b+")";
 }
 
@@ -127,9 +125,9 @@ function drawBar() {
 	barPlus.innerHTML = "Your browser does not support the HTML5 canvas tag."
 	barPlus.width = "600"
 	barPlus.height = "25"
-	$("#bar_plus").append(barPlus); 
+	$("#bar_plus").append(barPlus);
 	var barMinus = barPlus.cloneNode(true)
-	$("#bar_minus").append(barMinus); 
+	$("#bar_minus").append(barMinus);
 	barPlus = barPlus.getContext("2d");
 	barMinus = barMinus.getContext("2d");
 	var ctx = new Array(barPlus, barMinus);
@@ -194,3 +192,185 @@ function drawTable() {
 		el.append(tr);
 	}
 }
+
+$(document).on("click", "#plot_btn", function(e) {
+	$.ajax({
+		url: "../plot",
+		// headers: headers,
+		type: "POST",
+		data: send,
+		success: function(data) {
+			keys = Object.keys(data);
+			sorted_data = new Array(keys.length);
+			var i=0;
+			for(i=0;i<sorted_data.length;i++) {
+				sorted_data[i] = new Array(keys[i],data[keys[i]]);
+			}
+            console.log(sorted_data)
+			// sorted_data = sorted_data.sort(compare);
+			drawAdjustableBar(sorted_data);
+			//TODO
+		},
+	    beforeSend: function(xhr, settings) {
+	        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url))
+	            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+	    }
+	})
+});
+
+function getColor(value, threshold){
+    var contri = parseFloat(value);
+    if (contri >= threshold){
+        contri = threshold;
+    }else if (contri <= -threshold) {
+        contri = -threshold;
+    }
+    contri += threshold;
+    var percentage = parseInt(contri/(threshold*2)*100.0);
+    var color = getColorByBaiFenBi(percentage);
+    return color;
+}
+
+
+var dataPoints = [];
+function drawAdjustableBar(sorted_data) {
+    $(".plot").show();
+    console.log("drawbar!");
+    // var dataPoints = [];
+    var totalDataPoints = []
+    var myColors =[];
+    var threshold = 2.0;
+    $.each(sorted_data, function(key, value){
+        var score = value[1][0];
+        var freq  = value[1][1];
+        var color = getColor(score, threshold);
+        var label1 = "("+value[0]+")" + "*"+ String(freq);
+        dataPoints.push({label: value[0], y: parseFloat(score),color:color, freq: freq});
+        var total = score * freq;
+        var totCol = getColor(total, threshold);
+        totalDataPoints.push({label: value[0], y: parseFloat(total),color:totCol});
+    });
+
+    var chart = new CanvasJS.Chart("chartContainer",
+    {
+        title: {
+            text: "Gram Analysis",
+        },
+        data: [{
+    		type: "column",
+    		legendText: "Individual Word Contribution",
+    		showInLegend: true,
+    		dataPoints:dataPoints
+    	}
+        ]
+    });
+    chart.render();
+    // chart2.render();
+    var xSnapDistance = chart.axisX[0].convertPixelToValue(chart.get("dataPointWidth")) / 2;
+    var ySnapDistance = 800;
+    var xValue, yValue;
+    var mouseDown = false;
+    var selected = null;
+    var changeCursor = false;
+    var timerId = null;
+    function getPosition(e) {
+        var parentOffset = $("#chartContainer > .canvasjs-chart-container").offset();
+        var relX = e.pageX - parentOffset.left;
+        var relY = e.pageY - parentOffset.top;
+        xValue = Math.round(chart.axisX[0].convertPixelToValue(relX));
+        yValue = Math.round(chart.axisY[0].convertPixelToValue(relY)*1000);
+
+    }
+    function searchDataPoint() {
+        var dps = chart.data[0].dataPoints;
+        for(var i = 0; i < dps.length; i++ ) {
+            if( (xValue >= dps[i].x - xSnapDistance && xValue <= dps[i].x + xSnapDistance)
+            &&(yValue >= dps[i].y*1000 - ySnapDistance && yValue <= dps[i].y*1000 + ySnapDistance)
+        ) {
+                if(mouseDown) {
+                    selected = i;
+                    break;
+                }
+                else {
+                    changeCursor = true;
+                    break;
+                }
+            } else {
+                selected = null;
+                changeCursor = false;
+            }
+        }
+    }
+    jQuery("#chartContainer > .canvasjs-chart-container").on({
+        mousedown: function(e) {
+            mouseDown = true;
+            getPosition(e);
+            searchDataPoint();
+        },
+        mousemove: function(e) {
+            getPosition(e);
+            if(mouseDown) {
+                clearTimeout(timerId);
+                timerId = setTimeout(function(){
+                    if(selected != null) {
+                        var color = getColor(yValue/1000.0, threshold);
+                        dataPoints[selected].y = yValue/1000.0;
+                        dataPoints[selected].color = color;
+                        chart.render();
+                    }
+                }, 0);
+            }
+            else {
+                searchDataPoint();
+                if(changeCursor) {
+                    chart.data[0].set("cursor", "n-resize");
+                } else {
+                    chart.data[0].set("cursor", "default");
+                }
+            }
+        },
+        mouseup: function(e) {
+            if(selected != null) {
+                var color = getColor(yValue/1000.0, threshold);
+                // chart.data[0].dataPoints[selected].y = yValue/1000.0;
+                // chart.data[0].dataPoints[selected].color = color;
+                dataPoints[selected].y = yValue/1000.0;
+                dataPoints[selected].color = color;
+                chart.render();
+                mouseDown = false;
+            }
+        }
+    });
+}
+
+$(document).on("click", "#hide_explain", function(e) {
+    $(".explain").hide();
+});
+
+$(document).on("click", "#hide_plot", function(e) {
+    // var canvas = $('#chartContainer');
+    // // context.clearRect(0, 0, context.width, context.height);
+    // const ctx = canvas[0].getContext('2d');
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    $(".plot").hide();
+});
+
+$(document).on("click", "#save_plot", function(e) {
+    console.log(dataPoints);
+    $.ajax({
+		url: "../update",
+		type: "POST",
+        data: { dataPoints: JSON.stringify(dataPoints)},
+        dataType: "json",
+        async: true,
+        cache: false,
+        success: function(data) {
+            alert("model updated!");
+            // drawAdjustableBar(sorted_data);
+		},
+	    beforeSend: function(xhr, settings) {
+	        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url))
+	            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+	    }
+	})
+});

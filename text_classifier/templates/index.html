@@ -14,6 +14,8 @@
 <link rel="stylesheet" href="{% static "text_classifier/styles/main.css" %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<!-- canvas -->
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 
 </head>
@@ -117,6 +119,7 @@
             <p> This sentence is : {{label}}</p>
             <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
             <a class="btn btn-primary" id="explain_btn">explain</a>
+            <a class="btn btn-primary" id="plot_btn">plot</a>
             <a class="btn btn-primary" href="{% url 'text_classifier:index'%}">main page</a>
             <div class="explain" style="display: none;">
               <div class="explain-bar" id="bar_plus">
@@ -138,13 +141,20 @@
                   </tbody>
                 </table>
               </div>
+              <a class="btn btn-primary" id="hide_explain">hide</a>
             </div>
+
+            <!-- adjustableplot -->
+            <div class="plot" style="display: none;">
+                <div id="chartContainer" style="height: 370px; max-width: 720px;"></div>
+                <!-- <div id="chartContainer2" style="height: 370px; max-width: 720px;"></div> -->
+                <a class="btn btn-primary" id="hide_plot">hide</a>
+                <a class="btn btn-primary" id="save_plot">save</a>
+            </div>
+
 
           </div>
         {% else %}
-<!--           <div  class="form-group">
-            <img src="{% static "text_classifier/black.jpg" %}" alt="My image">
-          </div> -->
         {% endif %}
        </form>
 

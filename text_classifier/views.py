@@ -14,7 +14,7 @@ from django import forms
 import os
 import shutil
 from django.http import JsonResponse
-
+import json
 
 filename = 'data/labeled_collection.tsv'
 cv_model_name = "data/cv.joblib"
@@ -162,18 +162,31 @@ def results(request):
     # </ul>
 
 def plot(request):
+    # print(request.POST.get('sentence'))
     sentence = request.session['sentence'] #request.POST.get('sentence')
-    print("sentence is",sentence)
-    result = explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name)
+    result = explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name, True)
+    # result = {'food':[-0.8,1],'is':0.1,'very':-0.5,\
+    #  'good':3,'what':1,'bad':-2}
     print(result)
     return JsonResponse(result)
 
+def update(request):
+    dataPoints = request.POST.get("dataPoints")
+    dataPoints = json.loads(dataPoints)
+    grams = [[data["label"],data["y"]] for data in dataPoints]
+    update_model(grams, cv_model_name, sk_model_name, lr_model_name)
+    # [{"label":"food","y":-0.9696667228377398,"color":"rgb(255,127,0)","x":0},{"label":"is","y":0.42468344845046,"color":"rgb(204,255,0)","x":1},{"label":"good","y":1.786179814172434,"color":"rgb(30,255,0)","x":2},{"label":"food is","y":-0.44760840323097706,"color":"rgb(255,193,0)","x":3},{"label":"is good","y":0.6428565081329942,"color":"rgb(173,255,0)","x":4}]
+    # for dataPoint in dataPoints:
+
+    result = {'food':-0.8,'is':0.1,'very':-0.5,\
+     'good':3,'what':1,'bad':-2}
+    return JsonResponse(result)
+
+
 def explain(request):
     sentence = request.session['sentence'] #request.POST.get('sentence')
-    print("sentence is",sentence)
-    result = explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name)
-    print(result)
-    # print(request.POST.get('gram_dict'))
+    # print("sentence is",sentence)
+    result = explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name,False)
     # result = {'food':-0.8,'is':0.1,'very':-0.5,\
     #  'good':3,'what':1,'bad':-2}
     return JsonResponse(result)
