@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="circles.js"></script>
+    <script src="circles.min.js"></script>
+    <script type="text/javascript"></script>
+  	<title>performance matrics</title>
+  	<style>
+  		.circle {
+  			display: inline-block;
+  			margin: 1em;
+  		}
+  		.circles-decimals {
+  			font-size: .4em;
+  		}
+  	</style>
+  </head>
+  <header></header>
+  <body>
+    <h3>accuracy</h3>
+  	<div class="circle" id="circles-1"></div>
+    <br>
+    <h3>recall</h3>
+    <div class="circle" id="circles-2"></div>
+    <br>
+    <h3>precision</h3>
+    <div class="circle" id="circles-3"></div>
+    <br>
+    <h3>F1-score</h3>
+    <div class="circle" id="circles-4"></div>
+
+  	<script src="circleGenerate.js"></script>
+  	<script>
+
+
+
+      Circles.create({
+  			id:           'circles-1',
+  			value:        30,
+  			radius:       60,
+  			width:        10,
+  			duration:     1,
+  			colors:       ['#D3B6C6', '#4B253A']
+  		});
+      Circles.create({
+        id:           'circles-2',
+        value:        40,
+        radius:       60,
+        width:        10,
+        duration:     1,
+        colors:       ['#D3B6C6', '#4B253A']
+      });
+      Circles.create({
+        id:           'circles-3',
+        value:        50,
+        radius:       60,
+        width:        10,
+        duration:     1,
+        colors:       ['#D3B6C6', '#4B253A']
+      });
+      Circles.create({
+        id:           'circles-4',
+        value:        60,
+        radius:       60,
+        width:        10,
+        duration:     1,
+        colors:       ['#D3B6C6', '#4B253A']
+      });
+  	</script>
+  </body>
+</html>
