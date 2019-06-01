@@ -3,7 +3,7 @@
   var elem2 = document.getElementById("myBar2");
   // var confidence =  document.getElementById("confidence_bar")
   // var confidence_p =  document.getElementById("confidence_bar").value;
-  var pp = 10;
+  var pp = 20;
   // console.log(confidence);
 
   var width = 10;
@@ -21,7 +21,7 @@
     }
   }
   function frame2() {
-    if (width >= (1-pp.0)) {
+    if (width >= (100-pp)) {
       clearInterval(id2);
     }
     else {
