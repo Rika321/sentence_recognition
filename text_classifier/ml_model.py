@@ -149,8 +149,6 @@ def predict(sentence, cv_model_name, sk_model_name, lr_model_name):
         return ["NEGATIVE",None] if random.random() > 0.5 else ["POSITIVE",None]
 
 
-
-
 def read_unlabeled(tarfname, sentiment):
     """Reads the unlabeled data.
 
