@@ -98,7 +98,7 @@
                           <br>
                           <h3>F1-score</h3>
                           <div class="circle" id="circles-4"></div>
-            
+
                           <script src="{% static "text_classifier/js/circle.min.js" %}"></script>
                           <script src="{% static "text_classifier/js/circle.utility.js" %}"></script>
                           <script src="{% static "text_classifier/js/circle.generate.js" %}"></script>
@@ -158,12 +158,12 @@
             <p id='sentence'> Analyzing sentence: {{sentence}}</p>
             <p> This sentence is : {{label}}</p>
                 <div style="max-height: 370px; max-width: 720px;">
-                    <h1>Positive</h1>
+                    <h3>Positive</h3>
                     <div id="myProgress1">
                       <div id="myBar1">0%</div>
                     </div>
                     <br>
-                    <h1>Negative</h1>
+                    <h3>Negative</h3>
                     <div id="myProgress2">
                       <div id="myBar2">0%</div>
                     </div>
@@ -231,6 +231,5 @@
   <!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
   <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> -->
   <script src="{% static "text_classifier/js/explain.js" %}"></script>
-  <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
 </body>
 </html>
