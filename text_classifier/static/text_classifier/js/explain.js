@@ -139,17 +139,13 @@ function drawBar() {
 		min[id] = Math.min(min[id], temp);
 		max[id] = Math.max(max[id], temp);
 	}
-    var count1 = 0;
-    var count2 = 0;
+    var mark1 = 0;
+    var mark2 = 0;
 	for(let a of sorted_data) {
-		if(a[1]>0) {
+		if(a[1]>0)
 			id = 0;
-            count1++;
-        }
-		else {
+		else
 			id = 1;
-            count2++;
-        }
 		len = totalLen*Math.abs(a[1])/total;
 		var part = 50;
 		if(max[id]!=min[id])
@@ -168,8 +164,18 @@ function drawBar() {
         var lineWidth = "1px";
         subBar.style.borderTop = lineWidth+" solid #000";
         subBar.style.borderBottom = lineWidth+" solid #000";
-        if(count1==1 || count2==1)
-            subBar.style.borderLeft = lineWidth+" solid #000";
+        if(a[1]>0) {
+            if(mark1==0) {
+                subBar.style.borderLeft = lineWidth+" solid #000";
+                mark1 = 1;
+            }
+        }
+        if(a[1]<0) {
+            if(mark2==0) {
+                subBar.style.borderLeft = lineWidth+" solid #000";
+                mark2 = 1;
+            }
+        }
         subBar.style.borderRight = lineWidth+" solid #000";
         subBar.title = a[0]+"<br/>"+a[1].toFixed(2);
         $(subBar).poshytip();
