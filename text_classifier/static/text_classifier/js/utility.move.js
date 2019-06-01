@@ -6,27 +6,28 @@
   var pp = 20;
   // console.log(confidence);
 
-  var width = 10;
-  var id1 = setInterval(frame1, 0);
-  var id2 = setInterval(frame2, 0);
+  var width1 = 0;
+  var width2 = 0;
+  var id1 = setInterval(frame1, 450/pp);
+  var id2 = setInterval(frame2, 450/(100-pp));
 
   function frame1() {
-    if (width >= pp) {
+    if (width1 >= pp) {
       clearInterval(id1);
     }
     else {
-      width++;
-      elem1.style.width = width + '%';
-      elem1.innerHTML = width * 1  + '%';
+      width1++;
+      elem1.style.width = width1 + '%';
+      elem1.innerHTML = width1 * 1  + '%';
     }
   }
   function frame2() {
-    if (width >= (100-pp)) {
+    if (width2 >= (100-pp)) {
       clearInterval(id2);
     }
     else {
-      width++;
-      elem2.style.width = width + '%';
-      elem2.innerHTML = width * 1  + '%';
+      width2++;
+      elem2.style.width = width2 + '%';
+      elem2.innerHTML = width2 * 1  + '%';
     }
   }

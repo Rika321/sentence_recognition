@@ -253,12 +253,10 @@ function drawAdjustableBar(sorted_data) {
     var myColors =[];
     var threshold = 2.0;
     $.each(sorted_data, function(key, value){
-        var score = value[1][0];
-        var freq  = value[1][1];
+        var score = value[1];
         var color = getColor(score, threshold);
-        var label1 = "("+value[0]+")" + "*"+ String(freq);
-        dataPoints.push({label: value[0], y: parseFloat(score),color:color, freq: freq});
-        var total = score * freq;
+        dataPoints.push({label: value[0], y: parseFloat(score),color:color});
+        var total = score;
         var totCol = getColor(total, threshold);
         totalDataPoints.push({label: value[0], y: parseFloat(total),color:totCol});
     });
