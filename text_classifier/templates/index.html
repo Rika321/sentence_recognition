@@ -141,7 +141,21 @@
             <p id='sentence'> Analyzing sentence: {{sentence}}</p>
             <p> This sentence is : {{label}}</p>
                 <div style="max-height: 370px; max-width: 720px;">
-                    <h3>Positive</h3>
+                    <h1>Positive</h1>
+                    <div id="myProgress1">
+                      <div id="myBar1">0%</div>
+                    </div>
+                    <br>
+                    <h1>Negative</h1>
+                    <div id="myProgress2">
+                      <div id="myBar2">0%</div>
+                    </div>
+                    <br>
+                    <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
+
+                    <!-- <button onclick="move()">Show Confidence:</button> -->
+
+                    <!-- <h3>Positive</h3>
                      <div class="progress" id="myProgress1">
                         <div class="progress-bar" id="myBar1" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:70%">
                           70%
@@ -149,10 +163,10 @@
                      </div>
                     <h3>Negative</h3>
                     <div class="progress" id="myProgress2">
-                       <div class="progress-bar" id="myBar2" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                       <div class="progress-bar" id="myBar2" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:30%">
                          70%
                        </div>
-                    </div>
+                    </div> -->
                     <br>
                 </div>
             <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
