@@ -97,36 +97,37 @@ def explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name, hasFreq
         cv = load(cv_model_name)
         sk = load(sk_model_name)
         lr = load(lr_model_name)
-        gram_freq = get2Gram(sentence)
         gram_dict = defaultdict(float)
-        for word,freq in gram_freq.items():
-            word_ = cv.transform([word])
-            word_ = sk.transform(word_)
-            score = 0 #lr.decision_function(word_)[0] - lr.fit_intercept
-            for row, col in zip(*word_.nonzero()):
-                score += word_[row, col]*lr.coef_[row, col]
-            if hasFreq:
-                gram_dict[word] = [score, freq]
-            else:
-                gram_dict[word] = score
+        feature = cv.get_feature_names()
+        support = sk.get_support(True)
+        sentence_ = cv.transform([sentence])
+        sentence_ = sk.transform(sentence_)
+        for row, col in zip(*sentence_.nonzero()):
+            score = sentence_[row, col]*lr.coef_[0][col]
+            word = feature[support[col]]
+            gram_dict[word] = score
+        gram_dict['_INTERCEPT_'] = lr.intercept_[0]
         return dict(gram_dict)
     except Exception as e:
         print("ERROR",e)
         return None
 
 
-def update_model(grams, cv_model_name, sk_model_name, lr_model_name):
+def update_model(sentence, grams, cv_model_name, sk_model_name, lr_model_name):
     try:
         cv = load(cv_model_name)
         sk = load(sk_model_name)
         lr = load(lr_model_name)
-        for [word,score] in grams:
-            if len(word.split()) == 1:
-                X_ = cv.transform([word])
-                X = sk.transform(X_)
-                for row, col in zip(*X.nonzero()):
-                    val = X[row, col]
-                    lr.coef_[row, col] = score/X[row, col]
+        gram_dict = defaultdict(float)
+        feature = cv.get_feature_names()
+        support = sk.get_support(True)
+        sentence_ = cv.transform([sentence])
+        sentence_ = sk.transform(sentence_)
+        for row, col in zip(*sentence_.nonzero()):
+            score = sentence_[row, col]
+            word = feature[support[col]]
+            lr.coef_[0][col] = grams[word]/score
+        lr.intercept_[0] = grams['_INTERCEPT_']
         dump(lr, lr_model_name)
     except Exception as e:
         print("ERROR",e)

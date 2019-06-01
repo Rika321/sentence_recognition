@@ -30,7 +30,7 @@ def apply_model(request):
     add_save_my_session('devname',devname)
     # request.session['devname'] = "data/"+devname
     context = {
-        'devname': devname,
+        'devname': devname[5:],
         'total_sample' : count_labeled_examples(devname),
         'label': None,
         'mode' : 'eval_mode',
@@ -237,14 +237,17 @@ def plot(request):
 
 def update(request):
     devname = load_my_session('devname')
+    sentence = load_my_session('sentence')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
     dataPoints = request.POST.get("dataPoints")
     dataPoints = json.loads(dataPoints)
-    grams = [[data["label"],data["y"]] for data in dataPoints]
-    update_model(grams, cv_model_name, sk_model_name, lr_model_name)
+    grams = {}
+    for data in dataPoints:
+        grams[data["label"]] = data["y"]
+    update_model(sentence, grams, cv_model_name, sk_model_name, lr_model_name)
 
     template = loader.get_template('index.html')
     label, score = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
