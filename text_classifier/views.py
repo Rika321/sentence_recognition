@@ -156,8 +156,8 @@ def simple_upload(request):
 def train_mode(request):
     template = loader.get_template('index.html')
     devname = request.session['devname']
-    print(devname)
     context = {
+        'devname': devname[5:],
         'total_sample' : count_labeled_examples(devname),
         'mode' : 'train_mode',
         'label': None,
@@ -167,7 +167,7 @@ def train_mode(request):
     return HttpResponse(template.render(context, request))
 
 def index(request):
-    request.session['devname'] = devname
+    devname = request.session['devname']
     if request.method == "GET":
         # try:
         #     os.makedirs("data")
@@ -177,6 +177,7 @@ def index(request):
             # print ("Creation of the directory %s failed" % path)
         template = loader.get_template('index.html')
         context = {
+            'devname': devname[5:],
             'mode' : 'eval_mode',
             'dataset_name': os.listdir("data"),
             'label': None,
@@ -207,6 +208,7 @@ def results(request):
     lr_model_name = devname+"/lr.joblib"
     label, score = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
     context = {
+        "devname": devname[5:],
         "sentence": sentence,
         "label": str(label),
         "score": float(score),

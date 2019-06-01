@@ -58,3 +58,17 @@
   margin-right: 0px;
   margin-left: 0px;
 }
+
+.review {
+  width: 500px;
+  margin-bottom: 10px;
+}
+
+.select_group {
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+.table {
+  width: 800px;
+}
