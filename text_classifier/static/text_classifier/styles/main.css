@@ -59,6 +59,7 @@
   margin-left: 0px;
 }
 
+<<<<<<< HEAD
 
 
 #myProgress1 {
@@ -85,3 +86,18 @@
   line-height: 30px;
   color: white;
 }
+=======
+.review {
+  width: 500px;
+  margin-bottom: 10px;
+}
+
+.select_group {
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+.table {
+  width: 800px;
+}
+>>>>>>> 80babfff8d764339975ee2fd5aa017813e61541f

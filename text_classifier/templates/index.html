@@ -57,12 +57,20 @@
           <form action="{% url 'text_classifier:apply_model' %}" method="post" enctype="multipart/form-data">
                {% csrf_token %}
                <label>working on {{ data_name }} dataset</label> <br>
+               <div class="input-group select_group">
                <select name="sel_data" class="select form-control">
                    {%for dataset in dataset_name %}
-                       <option value={{dataset}}>{{dataset}}</option>
+                   {% if devname == dataset %}
+                    <option value={{dataset}} selected="selected">{{dataset}}</option>
+                   {% else %}
+                    <option value={{dataset}}>{{dataset}}</option>
+                   {% endif %}
                    {% endfor %}
                </select>
+               <span class="input-group-btn">
                <button type="submit" class="btn btn-primary">Select</button>
+               </span>
+               </div>
            </form>
           {% if mode == 'train_mode' %}
               <div  class="form-group">
@@ -115,8 +123,10 @@
               <form class="form-horizontal" action="{% url 'text_classifier:results' %}" method="post">
                   <div  class="form-group">
                     {% csrf_token %}
-                    <label for="{{form.phrase.id_for_label}}">Type a review</label> <br/>
-                    <input id="input_text" type="text" name="sentence" value="{{ sentence_text }}">
+                    <div class="review">
+                    <label for="input_text">Type a review</label>
+                    <textarea id="input_text" class="form-control" rows="6" name="sentence" value="{{ sentence_text }}"></textarea>
+                    </div>
                     <button type="submit" class="btn btn-primary">Detect</button>
                   </div>
               </form>

@@ -149,6 +149,7 @@ def train_mode(request):
     devname = load_my_session('devname')
     print(devname)
     context = {
+        'devname': devname[5:],
         'total_sample' : count_labeled_examples(devname),
         'mode' : 'train_mode',
         'label': None,
@@ -159,6 +160,7 @@ def train_mode(request):
     return HttpResponse(template.render(context, request))
 
 def index(request):
+    devname = load_my_session('devname')
     if request.method == "GET":
         # try:
         #     os.makedirs("data")
@@ -169,6 +171,7 @@ def index(request):
         devname = load_my_session('devname')
         template = loader.get_template('index.html')
         context = {
+            'devname': devname[5:],
             'mode' : 'eval_mode',
             'data_name': None if devname == None else devname.split("/")[1],
             'dataset_name': [""]+os.listdir("data"),
@@ -201,6 +204,7 @@ def results(request):
     print(devname)
     label, score = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
     context = {
+        "devname": devname[5:],
         "sentence": sentence,
         "label": str(label),
         "score": float(score),
