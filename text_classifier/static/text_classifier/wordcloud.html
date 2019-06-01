@@ -1,0 +1,11 @@
+{% load text_classifier %}
+<html lang="en">
+
+<script type="text/javascript" src="/static/lib/wordcloud2/src/wordcloud2.js"></script>
+<body>
+  <div id="canvas-container" style="float: left">
+      <canvas id="canvas" width="800px" height="600px"></canvas>
+  </div>
+</body>
+<script src="{% static "text_classifier/js/explain.js" %}"></script>
+</html>

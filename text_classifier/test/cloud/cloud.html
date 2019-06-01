@@ -1,0 +1,90 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      position: relative;
+      font-family: "Helvetica Neue", sans-serif;
+      width: 960px;
+      margin: auto;
+      margin-bottom: 1em;
+      margin-top: 20px;
+    }
+    #presets a { border-left: solid #666 1px; padding: 0 10px; }
+    #presets a.first { border-left: none; }
+    #keyword { width: 300px; }
+    #fetcher { width: 500px; }
+    #keyword, #go { font-size: 1.5em; }
+    #text { width: 100%; height: 100px; }
+    p.copy { font-size: small; }
+    #form { font-size: small; position: relative; }
+    hr { border: none; border-bottom: solid #ccc 1px; }
+    a.active { text-decoration: none; color: #000; font-weight: bold; cursor: text; }
+    #angles line, #angles path, #angles circle { stroke: #666; }
+    #angles text { fill: #333; }
+    #angles path.drag { fill: #666; cursor: move; }
+    #angles { text-align: center; margin: 0 auto; width: 350px; }
+    #angles input, #max { width: 42px; }
+  </style>
+  <script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script>
+</head>
+<body>
+  <div id="vis">
+    <svg width="960" height="600"><g></g>
+      <g transform="translate(480,300)scale(1.0041841268539429,1.0041841268539429)">
+      <text text-anchor="middle" transform="translate(28,-85)rotate(60)" style="font-size: 100px; font-family: Impact; fill: rgb(57, 59, 121);">word</text>
+      <text text-anchor="middle" transform="translate(-41,81)rotate(30)" style="font-size: 91px; font-family: Impact; fill: rgb(82, 84, 163);">words</text>
+      <text text-anchor="middle" transform="translate(236,-74)rotate(-60)" style="font-size: 86px; font-family: Impact; fill: rgb(107, 110, 207);">sprite</text>
+      <text text-anchor="middle" transform="translate(-153,113)rotate(60)" style="font-size: 72px; font-family: Impact; fill: rgb(156, 158, 222);">placed</text>
+      <text text-anchor="middle" transform="translate(-229,155)rotate(-30)" style="font-size: 64px; font-family: Impact; fill: rgb(99, 121, 57);">layout</text>
+      <text text-anchor="middle" transform="translate(66,-196)rotate(30)" style="font-size: 64px; font-family: Impact; fill: rgb(140, 162, 82);">algorithm</text>
+      <text text-anchor="middle" transform="translate(-10,-57)rotate(60)" style="font-size: 64px; font-family: Impact; fill: rgb(181, 207, 107);">area</text>
+      <text text-anchor="middle" transform="translate(-204,22)rotate(-30)" style="font-size: 52px; font-family: Impact; fill: rgb(206, 219, 156);">without</text>
+      <text text-anchor="middle" transform="translate(-60,-138)rotate(-30)" style="font-size: 52px; font-family: Impact; fill: rgb(140, 109, 49);">step</text>
+      <text text-anchor="middle" transform="translate(255,-204)rotate(0)" style="font-size: 52px; font-family: Impact; fill: rgb(189, 158, 57);">bounding</text>
+      <text text-anchor="middle" transform="translate(-302,99)rotate(0)" style="font-size: 52px; font-family: Impact; fill: rgb(231, 186, 82);">retrieve</text>
+      <text text-anchor="middle" transform="translate(-252,-48)rotate(-60)" style="font-size: 52px; font-family: Impact; fill: rgb(231, 203, 148);">operation</text>
+      <text text-anchor="middle" transform="translate(-126,-133)rotate(-60)" style="font-size: 52px; font-family: Impact; fill: rgb(132, 60, 57);">collision</text>
+      <text text-anchor="middle" transform="translate(133,74)rotate(30)" style="font-size: 52px; font-family: Impact; fill: rgb(173, 73, 74);">candidate</text>
+      <text text-anchor="middle" transform="translate(111,-95)rotate(60)" style="font-size: 37px; font-family: Impact; fill: rgb(214, 97, 107);">32</text>
+      <text text-anchor="middle" transform="translate(246,68)rotate(60)" style="font-size: 37px; font-family: Impact; fill: rgb(231, 150, 156);">placement</text>
+      <text text-anchor="middle" transform="translate(-16,5)rotate(60)" style="font-size: 37px; font-family: Impact; fill: rgb(123, 65, 115);">time</text>
+      <text text-anchor="middle" transform="translate(-25,178)rotate(-60)" style="font-size: 37px; font-family: Impact; fill: rgb(165, 81, 148);">possible</text>
+      <text text-anchor="middle" transform="translate(-93,-41)rotate(60)" style="font-size: 37px; font-family: Impact; fill: rgb(206, 109, 189);">even</text>
+      <text text-anchor="middle" transform="translate(286,-65)rotate(60)" style="font-size: 37px; font-family: Impact; fill: rgb(222, 158, 214);">simple</text>
+      <text text-anchor="middle" transform="translate(-209,186)rotate(-30)" style="font-size: 37px; font-family: Impact; fill: rgb(57, 59, 121);">starting</text>
+      <text text-anchor="middle" transform="translate(-195,-180)rotate(-30)" style="font-size: 37px; font-family: Impact; fill: rgb(82, 84, 163);">previously</text>
+      <text text-anchor="middle" transform="translate(107,111)rotate(60)" style="font-size: 37px; font-family: Impact; fill: rgb(107, 110, 207);">move</text>
+      <text text-anchor="middle" transform="translate(277,-8)rotate(30)" style="font-size: 37px; font-family: Impact; fill: rgb(156, 158, 222);">perform</text>
+      <text text-anchor="middle" transform="translate(87,190)rotate(0)" style="font-size: 37px; font-family: Impact; fill: rgb(99, 121, 57);">hierarchical</text>
+      <text text-anchor="middle" transform="translate(-71,104)rotate(30)" style="font-size: 37px; font-family: Impact; fill: rgb(140, 162, 82);">draw</text>
+      <text text-anchor="middle" transform="translate(5,230)rotate(30)" style="font-size: 37px; font-family: Impact; fill: rgb(181, 207, 107);">pixel</text>
+      <text text-anchor="middle" transform="translate(-349,7)rotate(-30)" style="font-size: 37px; font-family: Impact; fill: rgb(206, 219, 156);">data</text>
+    </g>
+  </svg>
+</div>
+<form id="form">
+  <p style="position: absolute; right: 0px; top: 0px; display: none;" id="status">202/202</p>
+  <div style="text-align: center">
+  <div id="presets"></div>
+  <div id="custom-area"></div>
+  </div>
+</form>
+<ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px;margin-left:116px" data-ad-client="ca-pub-2911491153890039" data-ad-slot="2029654015"></ins>
+<script src="../d3.min.js"></script>
+<script src="cloud.min.js"></script><form action="https://www.jasondavies.com/echo" target="_blank" method="POST"><input type="hidden" name="content-type"><input type="hidden" name="echo"></form>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  window.google_analytics_uacct = "UA-54563-3";
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-54563-3']);
+  _gaq.push(['_trackPageview']);
+  setTimeout(function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+    }, 1);
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</body>
+</html>
