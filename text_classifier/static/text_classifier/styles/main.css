@@ -58,3 +58,30 @@
   margin-right: 0px;
   margin-left: 0px;
 }
+
+
+
+#myProgress1 {
+  width: 100%;
+  background-color: #ddd;
+}
+#myBar1 {
+  width: 0%;
+  height: 30px;
+  background-color: #F08080;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+}
+#myProgress2 {
+  width: 100%;
+  background-color: #ddd;
+}
+#myBar2 {
+  width: 0%;
+  height: 30px;
+  background-color: #FFA07A;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+}

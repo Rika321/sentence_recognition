@@ -19,7 +19,6 @@
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script src="{% static "text_classifier/js/jquery.poshytip.js" %}"></script>
 
-
 </head>
 
 
@@ -132,6 +131,21 @@
           <div  class="form-group">
             <p id='sentence'> Analyzing sentence: {{sentence}}</p>
             <p> This sentence is : {{label}}</p>
+                <div style="max-height: 370px; max-width: 720px;">
+                    <h3>Positive</h3>
+                     <div class="progress" id="myProgress1">
+                        <div class="progress-bar" id="myBar1" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                          70%
+                        </div>
+                     </div>
+                    <h3>Negative</h3>
+                    <div class="progress" id="myProgress2">
+                       <div class="progress-bar" id="myBar2" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                         70%
+                       </div>
+                    </div>
+                    <br>
+                </div>
             <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
             <a class="btn btn-primary" id="explain_btn">explain</a>
             <a class="btn btn-primary" id="plot_btn">plot</a>
@@ -167,7 +181,6 @@
                 <a class="btn btn-primary" id="save_plot">save</a>
             </div>
 
-
           </div>
         {% else %}
         {% endif %}
@@ -176,7 +189,6 @@
       </div>
     </div>
   </div><!-- /container -->
-
   <!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
   <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> -->
   <script src="{% static "text_classifier/js/explain.js" %}"></script>
