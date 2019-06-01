@@ -200,8 +200,6 @@ def results(request):
     cv_model_name = devname+"/cv.joblib"
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
-    print(sentence)
-    print(devname)
     label, score = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
     context = {
         "devname": devname[5:],
@@ -211,7 +209,6 @@ def results(request):
         'data_name': None if devname == None else devname.split("/")[1],
         'dataset_name': [""]+os.listdir("data"),
     }
-    # request.session['sentence'] = sentence
     add_save_my_session('sentence',sentence)
     return HttpResponse(template.render(context, request))
 
