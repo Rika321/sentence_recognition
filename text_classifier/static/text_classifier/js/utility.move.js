@@ -3,7 +3,7 @@
   var elem2 = document.getElementById("myBar2");
   // var confidence =  document.getElementById("confidence_bar")
   // var confidence_p =  document.getElementById("confidence_bar").value;
-  var pp = 20;
+  var pp = parseInt(parseFloat($("#probability").html())*100);
   // console.log(confidence);
 
   var width1 = 0;

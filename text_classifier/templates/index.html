@@ -157,6 +157,7 @@
           <div  class="form-group">
             <p id='sentence'> Analyzing sentence: {{sentence}}</p>
             <p> This sentence is : {{label}}</p>
+            <span id="probability" style="display: none;">{{score}}</span>
                 <div style="max-height: 370px; max-width: 720px;">
                     <h3>Positive</h3>
                     <div id="myProgress1">
@@ -168,6 +169,7 @@
                       <div id="myBar2">0%</div>
                     </div>
                     <br>
+                    <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
 
                     <!-- <button onclick="move()">Show Confidence:</button> -->
 
