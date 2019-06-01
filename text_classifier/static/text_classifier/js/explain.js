@@ -357,6 +357,18 @@ $(document).on("click", "#hide_explain", function(e) {
     $(".explain").hide();
 });
 
+$(document).on("click", "#hide_table", function(e) {
+    var el = $("#explain_table_whole")
+    if(el.is(':hidden')) {
+         $("#explain_table_whole").show();
+         e.target.innerHTML = "hide table";
+     }
+     else {
+        $("#explain_table_whole").hide();
+        e.target.innerHTML = "show table";
+    }
+});
+
 $(document).on("click", "#hide_plot", function(e) {
     $(".plot").hide();
 });
