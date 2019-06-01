@@ -264,8 +264,10 @@ def update(request):
 
 def explain(request):
     sentence = request.session['sentence'] #request.POST.get('sentence')
-    # print("sentence is",sentence)
+    devname = request.session['devname']
+    filename = devname+"/labeled_collection.tsv"
+    cv_model_name = devname+"/cv.joblib"
+    sk_model_name = devname+"/sk.joblib"
+    lr_model_name = devname+"/lr.joblib"
     result = explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name,False)
-    # result = {'food':-0.8,'is':0.1,'very':-0.5,\
-    #  'good':3,'what':1,'bad':-2}
     return JsonResponse(result)

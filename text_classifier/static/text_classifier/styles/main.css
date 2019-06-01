@@ -41,3 +41,20 @@
   vertical-align: middle;
   display:inline-block;
 }
+
+.dd {
+  width: 400px;
+  margin-bottom: 15px;
+}
+
+.select {
+  width: 100px;
+  margin-bottom: 15px;
+  margin-right: 15px;
+  display:inline-block;
+}
+
+.form-horizontal .form-group {
+  margin-right: 0px;
+  margin-left: 0px;
+}

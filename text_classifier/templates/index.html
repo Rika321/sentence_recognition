@@ -11,8 +11,8 @@
 
 <!-- bootstrap -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-<link rel="stylesheet" href="{% static "text_classifier/styles/main.css" %}">
 <link rel="stylesheet" href="{% static "text_classifier/styles/tip-yellow.css" %}">
+<link rel="stylesheet" href="{% static "text_classifier/styles/main.css" %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 <!-- canvas -->
@@ -47,22 +47,22 @@
 
 <body>
 
-<div class="dd">
-    <form action="{% url 'text_classifier:apply_model' %}" method="post" enctype="multipart/form-data">
-         {% csrf_token %}
-         <select name="sel_data">
-             {%for dataset in dataset_name %}
-                 <option value={{dataset}}>{{dataset}}</option>
-             {% endfor %}
-         </select>
-         <br/>
-         <button type="submit" class="btn btn-primary">Select</button>
-     </form>
+<div class="container">
+
 </div>
 
   <div class="container" id="container">
     <div class="row">
       <div class="col-md-12">
+          <form action="{% url 'text_classifier:apply_model' %}" method="post" enctype="multipart/form-data">
+               {% csrf_token %}
+               <select name="sel_data" class="select form-control">
+                   {%for dataset in dataset_name %}
+                       <option value={{dataset}}>{{dataset}}</option>
+                   {% endfor %}
+               </select>
+               <button type="submit" class="btn btn-primary">Select</button>
+           </form>
           {% if mode == 'train_mode' %}
               <div  class="form-group">
                   <br/>
@@ -115,8 +115,6 @@
 
           {% elif mode == 'eval_mode' %}
               <form class="form-horizontal" action="{% url 'text_classifier:results' %}" method="post">
-                  <br/>
-                  <br/>
                   <div  class="form-group">
                     {% csrf_token %}
                     <label for="{{form.phrase.id_for_label}}">Type a review</label> <br/>
@@ -125,7 +123,7 @@
                   </div>
               </form>
          {% else %}
-             <p> Analyzing Bag: {{mode}}</p>
+             <!-- <p> Analyzing Bag: {{mode}}</p> -->
           {% endif %}
 
 

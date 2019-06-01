@@ -81,7 +81,6 @@ $(document).on("click", "#explain_btn", function(e) {
     }
 	$.ajax({
 		url: "../explain",
-		// headers: headers,
 		type: "POST",
 		data: send,
 		success: function(data) {
