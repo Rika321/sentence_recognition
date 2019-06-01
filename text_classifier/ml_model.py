@@ -92,7 +92,7 @@ def get2Gram(sentence):
     return gram_freq
 
 
-def explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name, freq = True):
+def explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name, hasFreq = True):
     try:
         cv = load(cv_model_name)
         sk = load(sk_model_name)
@@ -105,7 +105,7 @@ def explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name, freq = 
             score = 0 #lr.decision_function(word_)[0] - lr.fit_intercept
             for row, col in zip(*word_.nonzero()):
                 score += word_[row, col]*lr.coef_[row, col]
-            if freq:
+            if hasFreq:
                 gram_dict[word] = [score, freq]
             else:
                 gram_dict[word] = score

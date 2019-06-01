@@ -75,8 +75,10 @@ var compare = function(a,b) {
 }
 
 $(document).on("click", "#explain_btn", function(e) {
-	if($("#bar_plus").children("canvas").length>0)
+	if($("#bar_plus").children("div").length>0) {
+        $(".explain").show();
 		return;
+    }
 	$.ajax({
 		url: "../explain",
 		// headers: headers,
@@ -121,19 +123,9 @@ function getColorByBaiFenBi(bili){
 }
 
 function drawBar() {
-	var barPlus = document.createElement("canvas");
-	barPlus.innerHTML = "Your browser does not support the HTML5 canvas tag."
-	barPlus.width = "600"
-	barPlus.height = "25"
-	$("#bar_plus").append(barPlus);
-	var barMinus = barPlus.cloneNode(true)
-	$("#bar_minus").append(barMinus);
-	barPlus = barPlus.getContext("2d");
-	barMinus = barMinus.getContext("2d");
-	var ctx = new Array(barPlus, barMinus);
-	var start = new Array(0, 0);
+    var barContext = new Array($("#bar_plus"), $("#bar_minus"));
 	var len = 0;
-	var totalLen = 600;
+	var totalLen = $("#container").width()-200;
 	var id = 0;
 	var total = 0;
 	var min = new Array(1000000, 1000000);
@@ -148,29 +140,41 @@ function drawBar() {
 		min[id] = Math.min(min[id], temp);
 		max[id] = Math.max(max[id], temp);
 	}
+    var count1 = 0;
+    var count2 = 0;
 	for(let a of sorted_data) {
-		if(a[1]>0)
+		if(a[1]>0) {
 			id = 0;
-		else
+            count1++;
+        }
+		else {
 			id = 1;
+            count2++;
+        }
 		len = totalLen*Math.abs(a[1])/total;
-		// console.log(a[1]+" "+len);
-		ctx[id].lineWidth="2";
 		var part = 50;
 		if(max[id]!=min[id])
 			part = parseInt((Math.abs(a[1])-min[id])/(max[id]-min[id])*50);
-		// console.log(part);
 		if(id==1)
 			part = -part;
 		part += 50;
-		ctx[id].fillStyle=getColorByBaiFenBi(part);
-		barColor[a[0]] = ctx[id].fillStyle;
-		ctx[id].fillRect(start[id],0,len,25);
-		barPos[a[0]] = start[id]+len/2;
-		ctx[id].fillStyle="#000000";
-		ctx[id].rect(start[id],0,len,25);
-		ctx[id].stroke();
-		start[id] += len
+		var color = getColorByBaiFenBi(part);
+		barColor[a[0]] = color;
+        var subBar = document.createElement("div");
+        subBar.className = "draw_bar";
+        subBar.style.width = parseInt(len)+"px";
+        subBar.style.height = "25px";
+        subBar.style.background = color;
+        subBar.style.display = "inline-block";
+        var lineWidth = "1px";
+        subBar.style.borderTop = lineWidth+" solid #000";
+        subBar.style.borderBottom = lineWidth+" solid #000";
+        if(count1==1 || count2==1)
+            subBar.style.borderLeft = lineWidth+" solid #000";
+        subBar.style.borderRight = lineWidth+" solid #000";
+        subBar.title = a[0]+"<br/>"+a[1].toFixed(2);
+        $(subBar).poshytip();
+        barContext[id].append(subBar);
 	}
 	$(".explain").show();
 }
