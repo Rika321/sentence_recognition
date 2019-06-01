@@ -102,12 +102,12 @@ $(document).on("click", "#explain_btn", function(e) {
 
 
 function getColorByBaiFenBi(bili){
-    var one = (255+255) / 100;  
+    var one = (255+255) / 100;
     var r=0;
     var g=0;
     var b=0;
 
-    if ( bili < 50 ) { 
+    if ( bili < 50 ) {
         g = one * bili;
         r=255;
     }
@@ -127,9 +127,9 @@ function drawBar() {
 	barPlus.innerHTML = "Your browser does not support the HTML5 canvas tag."
 	barPlus.width = "600"
 	barPlus.height = "25"
-	$("#bar_plus").append(barPlus); 
+	$("#bar_plus").append(barPlus);
 	var barMinus = barPlus.cloneNode(true)
-	$("#bar_minus").append(barMinus); 
+	$("#bar_minus").append(barMinus);
 	barPlus = barPlus.getContext("2d");
 	barMinus = barMinus.getContext("2d");
 	var ctx = new Array(barPlus, barMinus);
@@ -194,3 +194,27 @@ function drawTable() {
 		el.append(tr);
 	}
 }
+
+// TODO: wordcloud
+function wordcloud() {
+  var wordFreqData = [];
+  var canvas = document.getElementById('canvas');
+  var options = eval({
+          "list": wordFreqData,//或者[['各位观众',45],['词云', 21],['来啦!!!',13]],只要格式满足这样都可以
+          "gridSize": 6, // 密集程度 数字越小越密集
+          "weightFactor": 1, // 字体大小=原始大小*weightFactor
+          "maxFontSize": 60, //最大字号
+          "minFontSize": 14, //最小字号
+          "fontWeight": 'normal', //字体粗细
+          "fontFamily": 'Times, serif', // 字体
+          "color": 'random-light', // 字体颜色 'random-dark' 或者 'random-light'
+          "backgroundColor": '#333', // 背景颜色
+          "rotateRatio": 1 // 字体倾斜(旋转)概率，1代表总是倾斜(旋转)
+  });
+  WordCloud(canvas, options);
+  //https://blog.csdn.net/qq_25475209/article/details/81258527
+}
+
+// TODO: confidence
+
+// TODO: acc * 4
