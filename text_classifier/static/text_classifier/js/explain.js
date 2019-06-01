@@ -205,8 +205,11 @@ function drawTable() {
 $(document).on("click", "#plot_btn", function(e) {
 	$.ajax({
 		url: "../plot",
-		// headers: headers,
+		// headers: {"X-CSRFToken": $.cookie('csrftoken')},
 		type: "POST",
+        xhrFields: {
+          withCredentials: true
+        },
 		data: send,
 		success: function(data) {
 			keys = Object.keys(data);
@@ -215,10 +218,10 @@ $(document).on("click", "#plot_btn", function(e) {
 			for(i=0;i<sorted_data.length;i++) {
 				sorted_data[i] = new Array(keys[i],data[keys[i]]);
 			}
-            console.log(sorted_data)
-			// sorted_data = sorted_data.sort(compare);
+            console.log(sorted_data);
+            // location.reload();
+            // sleep(2000);
 			drawAdjustableBar(sorted_data);
-			//TODO
 		},
 	    beforeSend: function(xhr, settings) {
 	        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url))
@@ -357,10 +360,6 @@ $(document).on("click", "#hide_explain", function(e) {
 });
 
 $(document).on("click", "#hide_plot", function(e) {
-    // var canvas = $('#chartContainer');
-    // // context.clearRect(0, 0, context.width, context.height);
-    // const ctx = canvas[0].getContext('2d');
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);
     $(".plot").hide();
 });
 

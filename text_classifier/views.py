@@ -22,27 +22,20 @@ sk_model_name = ""
 lr_model_name = ""
 devname = ""
 
-# def predict(sentence):
-#     print("predicting")
-#     if random.random() > 0.5:
-#         return "negative"
-#     else:
-#         return "positive"
-# Create your views here.
+
 
 def apply_model(request):
     template = loader.get_template('index.html')
-
-    devname    = request.POST.get('sel_data')
-    request.session['devname'] = "data/"+devname
-    print(request.session['devname'])
-
+    devname    = "data/"+request.POST.get('sel_data')
+    add_save_my_session('devname',devname)
+    # request.session['devname'] = "data/"+devname
     context = {
         'devname': devname,
         'total_sample' : count_labeled_examples(devname),
         'label': None,
         'mode' : 'eval_mode',
-        'dataset_name': os.listdir("data"),
+        'data_name': None if devname == None else devname.split("/")[1],
+        'dataset_name': [""]+os.listdir("data"),
     }
     return HttpResponse(template.render(context, request))
 
@@ -52,7 +45,7 @@ def apply_model(request):
 def simple_train(request):
     template = loader.get_template('index.html')
     if request.method == 'POST':
-        devname = request.session['devname']
+        devname = load_my_session('devname') #request.session['devname']
         filename = devname+"/labeled_collection.tsv"
         cv_model_name = devname+"/cv.joblib"
         sk_model_name = devname+"/sk.joblib"
@@ -71,7 +64,8 @@ def simple_train(request):
             'total_sample' : None,
             'mode' : 'train_mode',
             'label': None,
-            'dataset_name': os.listdir("data"),
+            'data_name': None if devname == None else devname.split("/")[1],
+            'dataset_name': [""]+os.listdir("data"),
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -79,7 +73,8 @@ def simple_train(request):
             'total_sample' : None,
             'mode' : 'train_mode',
             'label': None,
-            'dataset_name': os.listdir("data"),
+            'data_name': None if devname == None else devname.split("/")[1],
+            'dataset_name': [""]+os.listdir("data"),
         }
         return HttpResponse(template.render(context, request))
 
@@ -91,7 +86,7 @@ def simple_add(request):
         sentence = request.POST.get('sentence')
         label    = request.POST.get('label')
 
-        devname = request.session['devname']
+        devname = load_my_session('devname')
         filename = devname+"/labeled_collection.tsv"
 
         counter = transfer_one_line(filename, sentence, label)
@@ -99,7 +94,8 @@ def simple_add(request):
             'total_sample' : count_labeled_examples(devname),
             'mode' : 'train_mode',
             'label': None,
-            'dataset_name': os.listdir("data"),
+            'data_name': None if devname == None else devname.split("/")[1],
+            'dataset_name': [""]+os.listdir("data"),
         }
         return HttpResponse(template.render(context, request))
 
@@ -107,7 +103,8 @@ def simple_add(request):
         'total_sample' : count_labeled_examples(devname),
         'mode' : 'train_mode',
         'label': None,
-        'dataset_name': os.listdir("data"),
+        'data_name': None if devname == None else devname.split("/")[1],
+        'dataset_name': [""]+os.listdir("data"),
     }
     return HttpResponse(template.render(context, request))
 
@@ -116,28 +113,21 @@ def simple_upload(request):
     template = loader.get_template('index.html')
     if request.method == 'POST':
         try:
-            devname = "data/"+request.POST.get('devname')
+            new_devname = "data/"+request.POST.get('new_devname')
             try:
-                os.makedirs(devname)
+                os.makedirs(new_devname)
             except OSError:
                 print("existed file")
-
-            request.session['devname'] = devname
-            filename = devname+"/labeled_collection.tsv"
-            cv_model_name = devname+"/cv.joblib"
-            sk_model_name = devname+"/sk.joblib"
-            lr_model_name = devname+"/lr.joblib"
-
+            devname = load_my_session('devname')
+            filename = new_devname+"/labeled_collection.tsv"
             counter = transfer_labeled_tsvfile(filename, request.FILES["labeled_tsv_file"])
-            print(counter)
-            print(devname.split("/"))
             context = {
-                'data_name': devname.split("/")[1],
                 'read_sample'  : counter,
                 'total_sample' : count_labeled_examples(filename),
                 'mode' : 'train_mode',
                 'label': None,
-                'dataset_name': os.listdir("data"),
+                'data_name': None if devname == None else devname.split("/")[1],
+                'dataset_name': [""]+os.listdir("data"),
             }
             return HttpResponse(template.render(context, request))
         except Exception as error:
@@ -147,7 +137,8 @@ def simple_upload(request):
         'total_sample' : count_labeled_examples(),
         'mode' : 'train_mode',
         'label': None,
-        'dataset_name': os.listdir("data"),
+        'data_name': None if devname == None else devname.split("/")[1],
+        'dataset_name': [""]+os.listdir("data"),
     }
     return HttpResponse(template.render(context, request))
 
@@ -155,19 +146,19 @@ def simple_upload(request):
 
 def train_mode(request):
     template = loader.get_template('index.html')
-    devname = request.session['devname']
+    devname = load_my_session('devname')
     print(devname)
     context = {
         'total_sample' : count_labeled_examples(devname),
         'mode' : 'train_mode',
         'label': None,
-        'dataset_name': os.listdir("data"),
+        'data_name': None if devname == None else devname.split("/")[1],
+        'dataset_name': [""]+os.listdir("data"),
     }
     print("train_mode..")
     return HttpResponse(template.render(context, request))
 
 def index(request):
-    request.session['devname'] = devname
     if request.method == "GET":
         # try:
         #     os.makedirs("data")
@@ -175,10 +166,12 @@ def index(request):
         #     shutil.rmtree("data")
         #     os.makedirs("data")
             # print ("Creation of the directory %s failed" % path)
+        devname = load_my_session('devname')
         template = loader.get_template('index.html')
         context = {
             'mode' : 'eval_mode',
-            'dataset_name': os.listdir("data"),
+            'data_name': None if devname == None else devname.split("/")[1],
+            'dataset_name': [""]+os.listdir("data"),
             'label': None,
         }
         print("eval...")
@@ -187,11 +180,10 @@ def index(request):
     elif request.method == 'POST':
         sentence = request.POST.get('sentence')
         template = loader.get_template('index.html')
-
-
         context = {
             'label': sentence,
-            'dataset_name': os.listdir("data"),
+            'data_name': None if devname == None else devname.split("/")[1],
+            'dataset_name': [""]+os.listdir("data"),
         }
         return HttpResponse(template.render(context, request))
 
@@ -200,19 +192,23 @@ def results(request):
     # if request.method == 'POST':
     sentence = request.POST.get('sentence')
     template = loader.get_template('index.html')
-    devname = request.session['devname']
+    devname = load_my_session('devname')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
+    print(sentence)
+    print(devname)
     label, score = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
     context = {
         "sentence": sentence,
         "label": str(label),
         "score": float(score),
-        'dataset_name': os.listdir("data"),
+        'data_name': None if devname == None else devname.split("/")[1],
+        'dataset_name': [""]+os.listdir("data"),
     }
-    request.session['sentence'] = sentence
+    # request.session['sentence'] = sentence
+    add_save_my_session('sentence',sentence)
     return HttpResponse(template.render(context, request))
 
     # <ul>
@@ -223,21 +219,20 @@ def results(request):
 
 def plot(request):
     # print(request.POST.get('sentence'))
-    sentence = request.session['sentence']
-    devname = request.session['devname']
+    # sentence = request.session['sentence']
+    sentence = load_my_session('sentence')
+    devname  = load_my_session('devname')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
 
     result = explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name, True)
-    # result = {'food':[-0.8,1],'is':0.1,'very':-0.5,\
-    #  'good':3,'what':1,'bad':-2}
-    print(result)
-    return JsonResponse(result)
+    response = JsonResponse(result)
+    return response
 
 def update(request):
-    devname = request.session['devname']
+    devname = load_my_session('devname')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
     sk_model_name = devname+"/sk.joblib"
@@ -246,10 +241,6 @@ def update(request):
     dataPoints = json.loads(dataPoints)
     grams = [[data["label"],data["y"]] for data in dataPoints]
     update_model(grams, cv_model_name, sk_model_name, lr_model_name)
-    # [{"label":"food","y":-0.9696667228377398,"color":"rgb(255,127,0)","x":0},{"label":"is","y":0.42468344845046,"color":"rgb(204,255,0)","x":1},{"label":"good","y":1.786179814172434,"color":"rgb(30,255,0)","x":2},{"label":"food is","y":-0.44760840323097706,"color":"rgb(255,193,0)","x":3},{"label":"is good","y":0.6428565081329942,"color":"rgb(173,255,0)","x":4}]
-    # for dataPoint in dataPoints:
-    # result = {'food':-0.8,'is':0.1,'very':-0.5,\
-    #  'good':3,'what':1,'bad':-2}
 
     template = loader.get_template('index.html')
     label, score = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
@@ -257,14 +248,17 @@ def update(request):
         "sentence": sentence,
         "label": str(label),
         "score": float(score),
-        'dataset_name': os.listdir("data"),
+        'data_name': None if devname == None else devname.split("/")[1],
+        'dataset_name': [""]+os.listdir("data"),
     }
     return HttpResponse(template.render(context, request))
 
 
 def explain(request):
-    sentence = request.session['sentence'] #request.POST.get('sentence')
-    devname = request.session['devname']
+    # sentence = request.session['sentence'] #request.POST.get('sentence')
+    # devname = request.session['devname']
+    sentence = load_my_session('sentence')
+    devname = load_my_session('devname')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
     sk_model_name = devname+"/sk.joblib"

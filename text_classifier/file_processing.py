@@ -1,5 +1,27 @@
 import tarfile
 from django.core.files.storage import FileSystemStorage
+import json
+
+def add_save_my_session(key,val):
+    try:
+        with open('my_session/session.json', 'r') as file:
+            data = json.load(file)
+        data[key] = val
+        with open('my_session/session.json', 'w+') as file:
+            json.dump(data, file)
+        return 0
+    except:
+        with open('my_session/session.json', 'w+') as file:
+            json.dump({key:val}, file)
+        return 0
+
+def load_my_session(key):
+    try:
+        with open('my_session/session.json', 'r') as file:
+            data = json.load(file)
+        return data[key]
+    except:
+        return None
 
 
 def count_labeled_examples(filename):
