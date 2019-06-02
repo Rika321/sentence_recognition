@@ -10,6 +10,7 @@ import random
 from .file_processing import *
 from .models import *
 from .ml_model import *
+from .dev_function import *
 from django import forms
 import os
 import shutil
@@ -21,6 +22,7 @@ cv_model_name = ""
 sk_model_name = ""
 lr_model_name = ""
 devname = ""
+mode = ""
 
 
 
@@ -28,12 +30,13 @@ def apply_model(request):
     template = loader.get_template('index.html')
     devname    = "data/"+request.POST.get('sel_data')
     add_save_my_session('devname',devname)
+    mode = load_my_session('mode')
     # request.session['devname'] = "data/"+devname
     context = {
         'devname': devname[5:],
         'total_sample' : count_labeled_examples(devname),
         'label': None,
-        'mode' : 'eval_mode',
+        'mode' : mode,
         'data_name': None if devname == None else devname.split("/")[1],
         'dataset_name': [""]+os.listdir("data"),
     }
@@ -44,44 +47,38 @@ def apply_model(request):
 
 def simple_train(request):
     template = loader.get_template('index.html')
-    if request.method == 'POST':
-        devname = load_my_session('devname') #request.session['devname']
-        filename = devname+"/labeled_collection.tsv"
-        cv_model_name = devname+"/cv.joblib"
-        sk_model_name = devname+"/sk.joblib"
-        lr_model_name = devname+"/lr.joblib"
+    mode = load_my_session('mode')
+    devname = load_my_session('devname') #request.session['devname']
+    filename = devname+"/labeled_collection.tsv"
+    cv_model_name = devname+"/cv.joblib"
+    sk_model_name = devname+"/sk.joblib"
+    lr_model_name = devname+"/lr.joblib"
+    sentiment = read_files(filename)
+    print("\nTraining classifier")
+    transform_data(sentiment,cv_model_name)
+    select_feature(sentiment,sk_model_name)
+    acc = train_classifier( sentiment.trainX_select, sentiment.trainy, lr_model_name)
+    dev_stat_ = dev_statistics(filename, cv_model_name, sk_model_name, lr_model_name)
+    print(dev_stat_)
+    context = {
+        'PresicionScore':dev_stat_['PresicionScore'],
+        'F1Score':dev_stat_['F1Score'],
+        'total_sample' : count_labeled_examples(filename),
+        'devname': devname,
+        "train_acc" : acc,
+        'mode' : mode,
+        'label': None,
+        'data_name': None if devname == None else devname.split("/")[1],
+        'dataset_name': [""]+os.listdir("data"),
+    }
+    return HttpResponse(template.render(context, request))
 
-        print(".......",filename)
-        sentiment = read_files(filename)
-        print("\nTraining classifier")
-        transform_data(sentiment,cv_model_name)
-        select_feature(sentiment,sk_model_name)
-        acc = train_classifier( sentiment.trainX_select, sentiment.trainy, lr_model_name)
-        # os.remove(filename)
-        context = {
-            'devname': devname,
-            "train_acc" : acc,
-            'total_sample' : None,
-            'mode' : 'train_mode',
-            'label': None,
-            'data_name': None if devname == None else devname.split("/")[1],
-            'dataset_name': [""]+os.listdir("data"),
-        }
-        return HttpResponse(template.render(context, request))
-    else:
-        context = {
-            'total_sample' : None,
-            'mode' : 'train_mode',
-            'label': None,
-            'data_name': None if devname == None else devname.split("/")[1],
-            'dataset_name': [""]+os.listdir("data"),
-        }
-        return HttpResponse(template.render(context, request))
 
 
 
 def simple_add(request):
     template = loader.get_template('index.html')
+    mode = load_my_session('mode')
     if request.method == 'POST' and request.POST.get('sentence') != "":
         sentence = request.POST.get('sentence')
         label    = request.POST.get('label')
@@ -92,7 +89,7 @@ def simple_add(request):
         counter = transfer_one_line(filename, sentence, label)
         context = {
             'total_sample' : count_labeled_examples(devname),
-            'mode' : 'train_mode',
+            'mode' : mode,
             'label': None,
             'data_name': None if devname == None else devname.split("/")[1],
             'dataset_name': [""]+os.listdir("data"),
@@ -101,7 +98,7 @@ def simple_add(request):
 
     context = {
         'total_sample' : count_labeled_examples(devname),
-        'mode' : 'train_mode',
+        'mode' : mode,
         'label': None,
         'data_name': None if devname == None else devname.split("/")[1],
         'dataset_name': [""]+os.listdir("data"),
@@ -109,49 +106,103 @@ def simple_add(request):
     return HttpResponse(template.render(context, request))
 
 
+def simple_eval(request):
+    template = loader.get_template('index.html')
+    mode = load_my_session('mode')
+    devname = load_my_session('devname')
+    try:
+        cv_model_name = devname+"/cv.joblib"
+        sk_model_name = devname+"/sk.joblib"
+        lr_model_name = devname+"/lr.joblib"
+        # sentiment = read_file_stream(request.FILES["labeled_tsv_file"])
+        dev_stat_ = dev_statistics(request.FILES["up_tsv_file"], cv_model_name, sk_model_name, lr_model_name)
+        print(dev_stat_)
+        context = {
+            'PresicionScore':dev_stat_['PresicionScore'],
+            'F1Score':dev_stat_['F1Score'],
+            'total_sample' : count_labeled_examples(filename),
+            'devname': devname,
+            "train_acc" : acc,
+            'mode' : mode,
+            'label': None,
+            'data_name': None if devname == None else devname.split("/")[1],
+            'dataset_name': [""]+os.listdir("data"),
+        }
+        return HttpResponse(template.render(context, request))
+    except Exception as error:
+        print(error)
+        context = {
+            'total_sample' : None,
+            'mode' : mode,
+            'label': None,
+            'data_name': None if devname == None else devname.split("/")[1],
+            'dataset_name': [""]+os.listdir("data"),
+        }
+        return HttpResponse(template.render(context, request))
+
+
+
+
 def simple_upload(request):
     template = loader.get_template('index.html')
-    if request.method == 'POST':
+    mode = load_my_session('mode')
+    try:
+        new_devname = "data/"+request.POST.get('new_devname')
         try:
-            new_devname = "data/"+request.POST.get('new_devname')
-            try:
-                os.makedirs(new_devname)
-            except OSError:
-                print("existed file")
-            devname = load_my_session('devname')
-            filename = new_devname+"/labeled_collection.tsv"
-            counter = transfer_labeled_tsvfile(filename, request.FILES["labeled_tsv_file"])
-            context = {
-                'read_sample'  : counter,
-                'total_sample' : count_labeled_examples(filename),
-                'mode' : 'train_mode',
-                'label': None,
-                'data_name': None if devname == None else devname.split("/")[1],
-                'dataset_name': [""]+os.listdir("data"),
-            }
-            return HttpResponse(template.render(context, request))
-        except Exception as error:
-            print(error)
+            os.makedirs(new_devname)
+        except OSError:
+            print("existed file")
+        add_save_my_session('devname',new_devname)
+        devname = load_my_session('devname')
+        filename = new_devname+"/labeled_collection.tsv"
+        counter = transfer_labeled_tsvfile(filename, request.FILES["labeled_tsv_file"])
+        context = {
+            'read_sample'  : counter,
+            'total_sample' : count_labeled_examples(filename),
+            'mode' : 'train_mode',
+            'label': None,
+            'data_name': None if devname == None else devname.split("/")[1],
+            'dataset_name': [""]+os.listdir("data"),
+        }
+        return HttpResponse(template.render(context, request))
+    except Exception as error:
+        print(error)
+        context = {
+            'total_sample' : count_labeled_examples(),
+            'mode' : 'train_mode',
+            'label': None,
+            'data_name': None if devname == None else devname.split("/")[1],
+            'dataset_name': [""]+os.listdir("data"),
+        }
+        return HttpResponse(template.render(context, request))
 
+def eval_mode(request):
+    template = loader.get_template('index.html')
+    add_save_my_session('mode', 'eval_mode')
+    mode = load_my_session('mode')
+    devname = load_my_session('devname')
     context = {
-        'total_sample' : count_labeled_examples(),
-        'mode' : 'train_mode',
+        'devname': devname[5:],
+        'total_sample' : count_labeled_examples(devname),
+        'mode' : mode,
         'label': None,
         'data_name': None if devname == None else devname.split("/")[1],
         'dataset_name': [""]+os.listdir("data"),
     }
+    print("eval_mode..")
     return HttpResponse(template.render(context, request))
 
 
 
 def train_mode(request):
     template = loader.get_template('index.html')
+    add_save_my_session('mode', 'train_mode')
+    mode = load_my_session('mode')
     devname = load_my_session('devname')
-    print(devname)
     context = {
         'devname': devname[5:],
         'total_sample' : count_labeled_examples(devname),
-        'mode' : 'train_mode',
+        'mode' : mode,
         'label': None,
         'data_name': None if devname == None else devname.split("/")[1],
         'dataset_name': [""]+os.listdir("data"),
@@ -160,7 +211,9 @@ def train_mode(request):
     return HttpResponse(template.render(context, request))
 
 def index(request):
+    add_save_my_session('mode', 'pred_mode')
     devname = load_my_session('devname')
+    mode = load_my_session('mode')
     if request.method == "GET":
         # try:
         #     os.makedirs("data")
@@ -168,16 +221,14 @@ def index(request):
         #     shutil.rmtree("data")
         #     os.makedirs("data")
             # print ("Creation of the directory %s failed" % path)
-        devname = load_my_session('devname')
         template = loader.get_template('index.html')
         context = {
             'devname': devname[5:],
-            'mode' : 'eval_mode',
+            'mode' : mode,
             'data_name': None if devname == None else devname.split("/")[1],
             'dataset_name': [""]+os.listdir("data"),
             'label': None,
         }
-        print("eval...")
         return HttpResponse(template.render(context, request))
 
     elif request.method == 'POST':
@@ -196,6 +247,7 @@ def results(request):
     sentence = request.POST.get('sentence')
     template = loader.get_template('index.html')
     devname = load_my_session('devname')
+    mode = load_my_session('mode')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
     sk_model_name = devname+"/sk.joblib"
@@ -205,7 +257,8 @@ def results(request):
         "devname": devname[5:],
         "sentence": sentence,
         "label": str(label),
-        "score": float(score),
+        'mode' : mode,
+        "sent_conf": float(score),
         'data_name': None if devname == None else devname.split("/")[1],
         'dataset_name': [""]+os.listdir("data"),
     }
@@ -235,6 +288,7 @@ def plot(request):
 def update(request):
     devname = load_my_session('devname')
     sentence = load_my_session('sentence')
+    mode = load_my_session('mode')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
     sk_model_name = devname+"/sk.joblib"
@@ -251,6 +305,7 @@ def update(request):
     context = {
         "sentence": sentence,
         "label": str(label),
+        "mode": mode,
         "score": float(score),
         'data_name': None if devname == None else devname.split("/")[1],
         'dataset_name': [""]+os.listdir("data"),

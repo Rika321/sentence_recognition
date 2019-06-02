@@ -14,9 +14,10 @@
 from .ml_model import *
 from sklearn.metrics import precision_score
 import numpy as np
-
+import sklearn
+from collections import defaultdict
 from sklearn.datasets import make_classification
-from sklearn.cross_validation import StratifiedShuffleSplit
+from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, classification_report, confusion_matrix
 #
 # X, y = make_classification(n_samples=100, n_informative=10, n_classes=3)
@@ -26,23 +27,24 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 #     svc.fit(X_train, y_train)
 #     y_pred = svc.predict(X_test)
 
-def precisionScore(y_pred, y_label): #, modelName, datasetType):
+def precisionScore(result,y_pred, y_label): #, modelName, datasetType):
     pScore = precision_score(y_pred, y_label)
-    result.update({'PresicionScore', pScore})
-    return pScore
+    result['PresicionScore'] = pScore
 
-def RecallScore(y_pred, y_label): #, modelName, datasetType):
+
+def RecallScore(result,y_pred, y_label): #, modelName, datasetType):
     rScore = recall_score(y_pred, y_label)
-    result.update({'RecallScore', rScore})
-    return rScore
+    result['RecallScore'] = rScore
 
-def AccuracyScore(y_pred, y_label): #, modelName, datasetType):
+def AccuracyScore(result,y_pred, y_label): #, modelName, datasetType):
     aScore = accuracy_score(y_pred, y_label)
-    result.update({'AccuracyScore', aScore})
+    result['AccuracyScore'] = aScore
+    # result.update({'AccuracyScore', aScore})
 
-def F1Score(y_pred, y_label): #, modelName, datasetType):
-    fScore = F1_score(y_pred, y_label)
-    result.update({'F1Score', fScore})
+def F1Score(result,y_pred, y_label): #, modelName, datasetType):
+    fScore = f1_score(y_pred, y_label)
+    # result.update({'F1Score', fScore})
+    result['F1Score'] = fScore
 
 def classTag(filename):
     classTagDict = {}
@@ -54,9 +56,9 @@ def classTag(filename):
     freq2 = 0
     for i in range(len(y)):
         if y[i] == tag1:
-            freq1++
+            freq1+=1
         elif y[i] == tag2:
-            freq2++
+            freq2+=1
     classTagDict.update({tag1, freq1}, {tag2, freq2})
     return classTagDict
 
@@ -71,21 +73,55 @@ def keywords(filename):
     # background_color参数为设置背景颜色,默认颜色为黑色
 
 def dev_statistics(filename, cv_model_name, sk_model_name, lr_model_name):
-    result = {}
-    sentiment = read_files(filename)
-    y_dev = sentiment.trainy
-    X_dev = sentiment.trainX_select
-    y_pred = []
-    for x in X_dev:
-        y = predict(x, cv_model_name, sk_model_name, lr_model_name)
-        y_pred.append(y)
-    pScore = precisionScore(y_pred, y_dev)
-    AccuracyScore(y_pred, y_dev)
-    rScore = RecallScore(y_pred, y_dev)
-    F1Score(pScore, rScore)
-    return result
+    try:
+        print("evaluate!!!!")
+        result = defaultdict(float)
+        tag_dict = defaultdict(int)
+        sentiment = read_files(filename)
+        lr = load(lr_model_name)
+        transform_data(sentiment, cv_model_name)
+        select_feature(sentiment, sk_model_name)
+        y_dev = sentiment.trainy
+        X_dev = sentiment.trainX_select
+        y_pred = []
+        for idx,x in enumerate(X_dev):
+            y = lr.predict(x)[0]
+            tag_dict[sentiment.train_labels[idx]] += 1
+            y_pred.append(y)
+        precisionScore(result,y_pred, y_dev)
+        AccuracyScore(result,y_pred, y_dev)
+        RecallScore(result,y_pred, y_dev)
+        F1Score(result,y_pred, y_dev)
+        result["tag"] = tag_dict
+        print(result)
+        return dict(result)
+    except Exception as e:
+        print(e)
+        return None
 
-def data_statistics(filename):
-    tag = classTag(filename)
-    # TODO: call word cloud API
-    return tag
+def dev_statistics_sentiment(fs, cv_model_name, sk_model_name, lr_model_name):
+    try:
+        print("evaluate111!!!!")
+        result = defaultdict(float)
+        tag_dict = defaultdict(int)
+        sentiment = read_my_file_stream(fs)
+        lr = load(lr_model_name)
+        transform_data(sentiment, cv_model_name)
+        select_feature(sentiment, sk_model_name)
+        y_dev = sentiment.trainy
+        X_dev = sentiment.trainX_select
+        y_pred = []
+        for idx,x in enumerate(X_dev):
+            y = lr.predict(x)[0]
+            tag_dict[sentiment.train_labels[idx]] += 1
+            y_pred.append(y)
+        precisionScore(result,y_pred, y_dev)
+        AccuracyScore(result,y_pred, y_dev)
+        RecallScore(result,y_pred, y_dev)
+        F1Score(result,y_pred, y_dev)
+        result["tag"] = tag_dict
+        print(result)
+        return dict(result)
+    except Exception as e:
+        print(e)
+        return None

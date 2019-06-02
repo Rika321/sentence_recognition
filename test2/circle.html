@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="circles.js"></script>
+    <script src="circles.min.js"></script>
+    <script type="text/javascript"></script>
+  	<title>performance matrics</title>
+  	<style>
+  		.circle {
+  			display: inline-block;
+  			margin: 1em;
+  		}
+  		.circles-decimals {
+  			font-size: .4em;
+  		}
+  	</style>
+  </head>
+  <header></header>
+  <body>
+    <div class="training_stat">
+
+    <!-- <h3>accuracy</h3>
+  	<div class="circle" id="circles-1" style="display: inline"></div>
+    <h3>recall</h3>
+    <div class="circle" id="circles-2" style="display: inline"></div>
+    <h3>precision</h3>
+    <div class="circle" id="circles-3" style="display: inline"></div>
+    <h3>F1-score</h3>
+    <div class="circle" id="circles-4" style="display: inline"></div> -->
+
+    <h1>Statistics</h1>
+    <br>
+    <div style=" margin:auto; width:1700px; height:300px; border:solid 3px #D3B6C6;">
+      <!-- <div style=" width:100px; height:200px; float:left; margin-left:300px;"><h1><big>17</big></h1></div> -->
+      <!-- <div style="border-radius: 30%; width: 150px; height: 150px; float:left; margin-left:200px; display: inline-block;    background: #D3B6C6;      vertical-align: middle;">
+        <div style="display: block;    color: #4B253A;    height: 200px;    line-height: 150px;    text-align: center"> 50</div>
+      </div> -->
+      <div class="circle" id="circles-5" style=" width:100px; height:200px; float:left; margin-left:300px;"></div>
+      <div class="circle" id="circles-1" style=" width:100px; height:200px; float:left; margin-left:300px;"></div>
+      <div class="circle" id="circles-4" style=" width:10px; height:200px; float:left; margin-left:300px;"></div>
+      <div style=" width:360px; height:100px; float:left; margin-left:300px;"><h2>TEXTS</h2></div>
+      <div style=" width:330px; height:100px; float:left; margin-left:50px;"><h2>Accuracy</h2></div>
+      <div style=" width:10px; height:100px; float:left; margin-left:100px;"><h2>F1Score</h2></div>
+    </div>
+    <br>
+    <h1>Word Cloud of Keywords</h1>
+    <script src="tag1.js"></script>
+    <script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script>
+    <div style=" margin:auto; width:1700px; height:300px; border:solid 3px #D3B6C6;">
+      <div id="container" style="width: 300px; height:100%; float:left; margin-left:100px;"></div>
+        <script>
+          var data = [{x: "positive", value: 2235},{x: "negative", value: 3892}];
+          anychart.onDocumentReady(function(){var chart = anychart.pie();chart.title("Dataset Tag Distribution");chart.data(data);chart.container('container');chart.draw();});
+        </script>
+      </div>
+    </div>
+    <br>
+
+
+
+
+
+
+
+
+  	<script src="circleGenerate.js"></script>
+  	<script>
+      Circles.create({
+  			id:           'circles-1',
+  			value:        30,
+  			radius:       60,
+  			width:        10,
+  			duration:     1,
+  			colors:       ['#D3B6C6', '#4B253A']
+  		});
+      Circles.create({
+        id:           'circles-2',
+        value:        40,
+        radius:       60,
+        width:        10,
+        duration:     1,
+        colors:       ['#D3B6C6', '#4B253A']
+      });
+      Circles.create({
+        id:           'circles-3',
+        value:        50,
+        radius:       60,
+        width:        10,
+        duration:     1,
+        colors:       ['#D3B6C6', '#4B253A']
+      });
+      Circles.create({
+        id:           'circles-4',
+        value:        60,
+        radius:       60,
+        width:        10,
+        duration:     1,
+        colors:       ['#D3B6C6', '#4B253A']
+      });
+  	</script>
+  </body>
+</html>

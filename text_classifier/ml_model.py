@@ -144,9 +144,7 @@ def predict(sentence, cv_model_name, sk_model_name, lr_model_name):
         lr = load(lr_model_name)
         X = cv.transform(X)
         X = sk.transform(X)
-        print(X)
         print(label_dict[lr.predict(X)[0]])
-        print(lr.predict_proba(X))
         return [label_dict[lr.predict(X)[0]], lr.predict_proba(X)[0][0]]
     except Exception as e:
         print(e)
@@ -197,6 +195,26 @@ def read_tsv(fname):
             except:
                 print(line)
     return data, labels
+
+def read_my_file_stream(fs):
+    class Data: pass
+    sentiment = Data()
+    print("-- train data")
+    data = []
+    labels = []
+    for line in fs:
+        try:
+            line = line.decode("UTF-8")
+            (label,text) = line.strip().split("\t")
+            labels.append(label)
+            data.append(text)
+        except:
+            print(line)
+    sentiment.train_data, sentiment.train_labels = data, labels
+    return sentiment
+
+
+
 
 if __name__ == "__main__":
     print("Reading data")

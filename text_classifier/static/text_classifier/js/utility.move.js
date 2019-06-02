@@ -1,18 +1,19 @@
 
+
+  var sent_conf = parseInt(document.getElementById("sent_conf").value*100);
+
   var elem1 = document.getElementById("myBar1");
   var elem2 = document.getElementById("myBar2");
-  // var confidence =  document.getElementById("confidence_bar")
-  // var confidence_p =  document.getElementById("confidence_bar").value;
-  var pp = 20;
-  // console.log(confidence);
+  var pp = sent_conf;
+  console.log(pp);
 
   var width1 = 0;
   var width2 = 0;
-  var id1 = setInterval(frame1, 450/pp);
-  var id2 = setInterval(frame2, 450/(100-pp));
+  var id1 = setInterval(frame1, 450/(100-pp));
+  var id2 = setInterval(frame2, 450/pp);
 
   function frame1() {
-    if (width1 >= pp) {
+    if (width1 >= (100-pp)) {
       clearInterval(id1);
     }
     else {
@@ -22,7 +23,7 @@
     }
   }
   function frame2() {
-    if (width2 >= (100-pp)) {
+    if (width2 >= pp) {
       clearInterval(id2);
     }
     else {

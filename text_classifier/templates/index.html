@@ -18,6 +18,8 @@
 <!-- canvas -->
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script src="{% static "text_classifier/js/jquery.poshytip.js" %}"></script>
+<script src="{% static "text_classifier/js/tag.utility.js" %}"></script>
+<script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script>
 
 </head>
 
@@ -35,7 +37,8 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav navbar-right">
-            <li><a id = "eval_mode"  href = "{% url 'text_classifier:index' %}">EVALUATE</a></li>
+            <li><a id = "pred_mode"  href = "{% url 'text_classifier:index' %}">PREDICT</a></li>
+            <li><a id = "eval_mode"  href = "{% url 'text_classifier:eval_mode' %}">EVALUATE</a></li>
             <li><a id = "train_mode" href = "{% url 'text_classifier:train_mode' %}">TRAIN</a></li>
             <!-- <li><a id = "train_mode" href = "{% url 'text_classifier:train_mode' %}">TRAIN_Large</a></li> -->
           </ul>
@@ -45,6 +48,8 @@
 </header>
 
 <body>
+
+<!-- <img src="{% static "text_classifier/styles/tip-yellow.css"  alt=""> -->
 
 <div class="container">
 
@@ -86,25 +91,36 @@
                   {% endif %}
 
                   {% if train_acc %}
-                      <div class="training_stat">
-                          <h3>accuracy</h3>
-                          <div class="circle" id="circles-1"></div>
-                          <br>
-                          <h3>recall</h3>
-                          <div class="circle" id="circles-2"></div>
-                          <br>
-                          <h3>precision</h3>
-                          <div class="circle" id="circles-3"></div>
-                          <br>
-                          <h3>F1-score</h3>
-                          <div class="circle" id="circles-4"></div>
-            
-                          <script src="{% static "text_classifier/js/circle.min.js" %}"></script>
-                          <script src="{% static "text_classifier/js/circle.utility.js" %}"></script>
-                          <script src="{% static "text_classifier/js/circle.generate.js" %}"></script>
-                      </div>
-
-                    <p>got training accuracy:  {{ train_acc }} </p>
+                    <input type="hidden" id="train_acc" name="train_acc" value="{{ train_acc }}">
+                    <input type="hidden" id="F1Score" name="F1Score" value="{{ F1Score }}">
+                    <input type="hidden" id="total_sample" name="total_sample" value="{{ total_sample }}">
+                    <div class="training_stat">
+                        <br>
+                            <div class="container" style=" margin:auto; width:70%; height:300px; border:solid 3px #D3B6C6;">
+                              <div class="circle" id="circles-5" style=" width:8%; height:100px; float:left; margin-left:20%;"></div>
+                              <div class="circle" id="circles-1" style=" width:8%; height:100px; float:left; margin-left:20%;"></div>
+                              <div class="circle" id="circles-4" style=" width:8%; height:100px; float:left; margin-left:20%;"></div>
+                              <div style=" width:23%; height:50px; float:left; margin-left:22%;;"><h2>TEXTS</h2></div>
+                              <div style=" width:23%; height:50px; float:left; margin-left:5%;;"><h2>Accuracy</h2></div>
+                              <div style=" width:10%; height:50px; float:left; margin-left:8%;;"><h2>F1Score</h2></div>
+                            </div>
+                            <br>
+                            <h1>Word Cloud of Keywords</h1>
+                            <!-- <script src="tag1.js"></script>
+                            <script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script> -->
+                            <div class="container" style=" margin:auto; width:70%; height:200px; border:solid 3px #D3B6C6;">
+                              <div  id="container" style="width: 10%; height:10%; margin-left:10%;"></div>
+                                <script>
+                                  var data = [{x: "positive", value: 2235},{x: "negative", value: 3892}];
+                                  anychart.onDocumentReady(function(){var chart = anychart.pie();chart.title("Dataset Tag Distribution");chart.data(data);chart.container('container');chart.draw();});
+                                </script>
+                             </div>
+                    </div>
+                    <br>
+                    </div>
+                    <script src="{% static "text_classifier/js/circle.min.js" %}"></script>
+                    <script src="{% static "text_classifier/js/circle.utility.js" %}"></script>
+                    <script src="{% static "text_classifier/js/circle.generate.js" %}"></script>
                   {% endif %}
                   <br/>
 
@@ -136,7 +152,7 @@
                      <p><a href="{% url 'text_classifier:train_mode' %}">Return to home</a></p>
                  </div>
 
-          {% elif mode == 'eval_mode' %}
+          {% elif mode == 'pred_mode' %}
               <form class="form-horizontal" action="{% url 'text_classifier:results' %}" method="post">
                   <div  class="form-group">
                     {% csrf_token %}
@@ -147,6 +163,14 @@
                     <button type="submit" class="btn btn-primary">Detect</button>
                   </div>
               </form>
+
+          {% elif mode == 'eval_mode' %}
+                  <form class="form-horizontal" action="{% url 'text_classifier:simple_eval' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="labeled_tsv_file">
+                    <input id="input_text" type="text" name="up_tsv_file" value="{{ up_tsv_file }}"><br/>
+                    <button type="submit" class="btn btn-primary">EVALUATE</button>
+                  </form>
          {% else %}
              <!-- <p> Analyzing Bag: {{mode}}</p> -->
           {% endif %}
@@ -158,31 +182,18 @@
             <p id='sentence'> Analyzing sentence: {{sentence}}</p>
             <p> This sentence is : {{label}}</p>
                 <div style="max-height: 370px; max-width: 720px;">
-                    <h1>Positive</h1>
+                    <input type="hidden" id="sent_conf" name="sent_conf" value="{{ sent_conf }}">
+                    <h4>Positive</h4>
                     <div id="myProgress1">
                       <div id="myBar1">0%</div>
                     </div>
                     <br>
-                    <h1>Negative</h1>
+                    <h4>Negative</h4>
                     <div id="myProgress2">
                       <div id="myBar2">0%</div>
                     </div>
                     <br>
-
-                    <!-- <button onclick="move()">Show Confidence:</button> -->
-
-                    <!-- <h3>Positive</h3>
-                     <div class="progress" id="myProgress1">
-                        <div class="progress-bar" id="myBar1" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                          70%
-                        </div>
-                     </div>
-                    <h3>Negative</h3>
-                    <div class="progress" id="myProgress2">
-                       <div class="progress-bar" id="myBar2" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:30%">
-                         70%
-                       </div>
-                    </div> -->
+                    <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
                     <br>
                 </div>
             <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
@@ -231,6 +242,5 @@
   <!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
   <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> -->
   <script src="{% static "text_classifier/js/explain.js" %}"></script>
-  <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
 </body>
 </html>
