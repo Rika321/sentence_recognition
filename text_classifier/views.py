@@ -25,7 +25,6 @@ devname = ""
 mode = ""
 
 
-
 def apply_model(request):
     template = loader.get_template('index.html')
     devname    = "data/"+request.POST.get('sel_data')
@@ -52,14 +51,15 @@ def simple_train(request):
     devname = load_my_session('devname') #request.session['devname']
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
+    le_model_name = devname+"/le.joblib"
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
     sentiment = read_files(filename)
     print("\nTraining classifier")
-    transform_data(sentiment,cv_model_name)
+    transform_data(sentiment,cv_model_name, le_model_name)
     select_feature(sentiment,sk_model_name)
     acc = train_classifier( sentiment.trainX_select, sentiment.trainy, lr_model_name)
-    dev_stat_ = dev_statistics(filename, cv_model_name, sk_model_name, lr_model_name)
+    dev_stat_ = train_statistics(sentiment, lr_model_name)
     print(dev_stat_)
     context = {
         'PresicionScore':dev_stat_['PresicionScore'],
@@ -83,10 +83,8 @@ def simple_add(request):
     if request.method == 'POST' and request.POST.get('sentence') != "":
         sentence = request.POST.get('sentence')
         label    = request.POST.get('label')
-
         devname = load_my_session('devname')
         filename = devname+"/labeled_collection.tsv"
-
         counter = transfer_one_line(filename, sentence, label)
         context = {
             'total_sample' : count_labeled_examples(devname),
@@ -113,15 +111,15 @@ def simple_eval(request):
     devname = load_my_session('devname')
     try:
         cv_model_name = devname+"/cv.joblib"
+        le_model_name = devname+"/le.joblib"
         sk_model_name = devname+"/sk.joblib"
         lr_model_name = devname+"/lr.joblib"
-        # print("test")
         class Data: pass
         sentiment = Data()
         sentiment.train_data, sentiment.train_labels = transfer_stream(request.FILES["up_dev_file"])
         counter = len(sentiment.train_labels)
         print("transfered!")
-        dev_stat_ = dev_statistics_sentiment(sentiment, cv_model_name, sk_model_name, lr_model_name)
+        dev_stat_ = dev_statistics(sentiment, cv_model_name, le_model_name, sk_model_name, lr_model_name)
         print(dev_stat_)
         context = {
             'PresicionScore':dev_stat_['PresicionScore'],
@@ -145,8 +143,6 @@ def simple_eval(request):
             'dataset_name': [""]+os.listdir("data"),
         }
         return HttpResponse(template.render(context, request))
-
-
 
 
 def simple_upload(request):
@@ -197,7 +193,6 @@ def eval_mode(request):
     }
     print("eval_mode..")
     return HttpResponse(template.render(context, request))
-
 
 
 def train_mode(request):
@@ -256,9 +251,10 @@ def results(request):
     mode = load_my_session('mode')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
+    le_model_name = devname+"/le.joblib"
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
-    label, score = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
+    label, score = predict(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name)
     context = {
         "devname": None if devname is None else devname[5:],
         "sentence": sentence,
@@ -284,10 +280,11 @@ def plot(request):
     devname  = load_my_session('devname')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
+    le_model_name = devname+"/le.joblib"
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
 
-    result = explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name, True)
+    result = explain_grams(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name, True)
     response = JsonResponse(result)
     return response
 
@@ -297,6 +294,7 @@ def update(request):
     mode = load_my_session('mode')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
+    le_model_name = devname+"/le.joblib"
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
     dataPoints = request.POST.get("dataPoints")
@@ -304,10 +302,10 @@ def update(request):
     grams = {}
     for data in dataPoints:
         grams[data["label"]] = data["y"]
-    update_model(sentence, grams, cv_model_name, sk_model_name, lr_model_name)
+    update_model(sentence, grams, cv_model_name, le_model_name, sk_model_name, lr_model_name)
 
     template = loader.get_template('index.html')
-    label, score = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
+    label, score = predict(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name)
     context = {
         "sentence": sentence,
         "label": str(label),
@@ -326,7 +324,8 @@ def explain(request):
     devname = load_my_session('devname')
     filename = devname+"/labeled_collection.tsv"
     cv_model_name = devname+"/cv.joblib"
+    le_model_name = devname+"/le.joblib"
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
-    result = explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name,False)
+    result = explain_grams(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name,False)
     return JsonResponse(result)

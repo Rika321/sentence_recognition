@@ -26,41 +26,33 @@ from .file_processing import *
 #     X_train, X_test, y_train, y_test = X[train_idx], X[test_idx], y[train_idx], y[test_idx]
 #     svc.fit(X_train, y_train)
 #     y_pred = svc.predict(X_test)
-
-def precisionScore(result,y_pred, y_label): #, modelName, datasetType):
-    pScore = precision_score(y_pred, y_label)
-    result['PresicionScore'] = pScore
-
-
-def RecallScore(result,y_pred, y_label): #, modelName, datasetType):
-    rScore = recall_score(y_pred, y_label)
-    result['RecallScore'] = rScore
-
-def AccuracyScore(result,y_pred, y_label): #, modelName, datasetType):
-    aScore = accuracy_score(y_pred, y_label)
-    result['AccuracyScore'] = aScore
-    # result.update({'AccuracyScore', aScore})
-
-def F1Score(result,y_pred, y_label): #, modelName, datasetType):
-    fScore = f1_score(y_pred, y_label)
-    # result.update({'F1Score', fScore})
-    result['F1Score'] = fScore
-
-def classTag(filename):
-    classTagDict = {}
-    y = sentiment.trainy
-    sorted(y)
-    tag1 = y[0]
-    tag2 = y[-1]
-    freq1 = 0
-    freq2 = 0
-    for i in range(len(y)):
-        if y[i] == tag1:
-            freq1+=1
-        elif y[i] == tag2:
-            freq2+=1
-    classTagDict.update({tag1, freq1}, {tag2, freq2})
-    return classTagDict
+# def precisionScore(result,y_pred, y_label): #, modelName, datasetType):
+#     pScore = precision_score(y_pred, y_label)
+#     result['PresicionScore'] = pScore
+# def RecallScore(result,y_pred, y_label): #, modelName, datasetType):
+#     rScore = recall_score(y_pred, y_label)
+#     result['RecallScore'] = rScore
+# def AccuracyScore(result,y_pred, y_label): #, modelName, datasetType):
+#     aScore = accuracy_score(y_pred, y_label)
+#     result['AccuracyScore'] = aScore
+# def F1Score(result,y_pred, y_label): #, modelName, datasetType):
+#     fScore = f1_score(y_pred, y_label)
+#     result['F1Score'] = fScore
+# def classTag(filename):
+#     classTagDict = {}
+#     y = sentiment.trainy
+#     sorted(y)
+#     tag1 = y[0]
+#     tag2 = y[-1]
+#     freq1 = 0
+#     freq2 = 0
+#     for i in range(len(y)):
+#         if y[i] == tag1:
+#             freq1+=1
+#         elif y[i] == tag2:
+#             freq2+=1
+#     classTagDict.update({tag1, freq1}, {tag2, freq2})
+#     return classTagDict
 
 def keywords(filename):
     X = sentiment.trainX_select
@@ -72,26 +64,57 @@ def keywords(filename):
     # 通过font_path参数来设置字体集
     # background_color参数为设置背景颜色,默认颜色为黑色
 
-def dev_statistics(filename, cv_model_name, sk_model_name, lr_model_name):
+# def dev_statistics(filename, cv_model_name, sk_model_name, lr_model_name):
+#     try:
+#         print("evaluate!!!!")
+#         result = defaultdict(float)
+#         tag_dict = defaultdict(int)
+#         sentiment = read_files(filename)
+#         lr = load(lr_model_name)
+#         cv = load(cv_model_name)
+#         sk = load(sk_model_name)
+#         # transform_data(sentiment, cv_model_name)
+#         # select_feature(sentiment, sk_model_name)
+#
+#
+#         y_dev = sentiment.trainy
+#         X_dev = sentiment.trainX_select
+#         y_pred = []
+#         for idx,x in enumerate(X_dev):
+#             y = lr.predict(x)[0]
+#             tag_dict[sentiment.train_labels[idx]] += 1
+#             y_pred.append(y)
+#
+#         result[]
+#
+#         precisionScore(result,y_pred, y_dev)
+#         AccuracyScore(result,y_pred, y_dev)
+#         RecallScore(result,y_pred, y_dev)
+#         F1Score(result,y_pred, y_dev)
+#         result["tag"] = tag_dict
+#         print(result)
+#         return dict(result)
+#     except Exception as e:
+#         print(e)
+#         return None
+
+def train_statistics(sentiment,lr_model_name):
+    sentiment
     try:
-        print("evaluate!!!!")
         result = defaultdict(float)
         tag_dict = defaultdict(int)
-        sentiment = read_files(filename)
         lr = load(lr_model_name)
-        transform_data(sentiment, cv_model_name)
-        select_feature(sentiment, sk_model_name)
-        y_dev = sentiment.trainy
         X_dev = sentiment.trainX_select
+        y_dev = sentiment.trainy
         y_pred = []
         for idx,x in enumerate(X_dev):
             y = lr.predict(x)[0]
             tag_dict[sentiment.train_labels[idx]] += 1
             y_pred.append(y)
-        precisionScore(result,y_pred, y_dev)
-        AccuracyScore(result,y_pred, y_dev)
-        RecallScore(result,y_pred, y_dev)
-        F1Score(result,y_pred, y_dev)
+        result['AccuracyScore'] = accuracy_score(y_pred, y_dev)
+        result['PresicionScore'] = precision_score(y_pred, y_dev)
+        result['F1Score'] = f1_score(y_pred, y_dev)
+        result['RecallScore'] = recall_score(y_pred, y_dev)
         result["tag"] = tag_dict
         print(result)
         return dict(result)
@@ -99,24 +122,27 @@ def dev_statistics(filename, cv_model_name, sk_model_name, lr_model_name):
         print(e)
         return None
 
-def dev_statistics_sentiment(sentiment, cv_model_name, sk_model_name, lr_model_name):
+def dev_statistics(sentiment, cv_model_name, le_model_name, sk_model_name, lr_model_name):
     try:
         result = defaultdict(float)
         tag_dict = defaultdict(int)
+        cv = load(cv_model_name)
+        le = load(le_model_name)
+        sk = load(sk_model_name)
         lr = load(lr_model_name)
-        transform_data(sentiment, cv_model_name)
-        select_feature(sentiment, sk_model_name)
-        y_dev = sentiment.trainy
-        X_dev = sentiment.trainX_select
+        X_dev = cv.transform(sentiment.train_data)
+        X_dev = sk.transform(X_dev)
+        y_dev = le.transform(sentiment.train_labels)
         y_pred = []
         for idx,x in enumerate(X_dev):
             y = lr.predict(x)[0]
             tag_dict[sentiment.train_labels[idx]] += 1
             y_pred.append(y)
-        precisionScore(result,y_pred, y_dev)
-        AccuracyScore(result,y_pred, y_dev)
-        RecallScore(result,y_pred, y_dev)
-        F1Score(result,y_pred, y_dev)
+
+        result['AccuracyScore'] = accuracy_score(y_pred, y_dev)
+        result['PresicionScore'] = precision_score(y_pred, y_dev)
+        result['F1Score'] = f1_score(y_pred, y_dev)
+        result['RecallScore'] = recall_score(y_pred, y_dev)
         result["tag"] = tag_dict
         print(result)
         return dict(result)

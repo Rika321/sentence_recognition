@@ -23,25 +23,25 @@ def read_files(trainname):
     sentiment = Data()
     print("-- train data")
     sentiment.train_data, sentiment.train_labels = read_tsv(trainname)
-    # print("-- dev   data")
-    # sentiment.dev_data, sentiment.dev_labels = read_tsv(devname)
     return sentiment
 
 
-def transform_data(sentiment, model_name):
+def transform_data(sentiment, cv_model_name, le_model_name):
     print("-- transforming data and labels")
     try:
-        cv = load(model_name)
-        print("continue to use cv model!")
+        cv = load(cv_model_name)
+        le = load(le_model_name)
+        print("continue to use cv,le model!")
     except:
         cv = TfidfVectorizer(ngram_range=(1,2))
-        print("create to new cv model!")
+        le = preprocessing.LabelEncoder()
+        print("create to new cv,le model!")
     sentiment.trainX = cv.fit_transform(sentiment.train_data)
-    sentiment.le = preprocessing.LabelEncoder()
-    sentiment.le.fit(sentiment.train_labels)
-    sentiment.target_labels = sentiment.le.classes_
-    sentiment.trainy = sentiment.le.transform(sentiment.train_labels)
-    dump(cv, model_name)
+    le.fit(sentiment.train_labels)
+    sentiment.target_labels = le.classes_
+    sentiment.trainy = le.transform(sentiment.train_labels)
+    dump(le, le_model_name)
+    dump(cv, cv_model_name)
 
 def select_feature(sentiment, model_name):
     try:
@@ -92,7 +92,7 @@ def get2Gram(sentence):
     return gram_freq
 
 
-def explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name, hasFreq = True):
+def explain_grams(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name, hasFreq = True):
     try:
         cv = load(cv_model_name)
         sk = load(sk_model_name)
@@ -113,9 +113,10 @@ def explain_grams(sentence, cv_model_name, sk_model_name, lr_model_name, hasFreq
         return None
 
 
-def update_model(sentence, grams, cv_model_name, sk_model_name, lr_model_name):
+def update_model(sentence, grams, cv_model_name, le_model_name, sk_model_name, lr_model_name):
     try:
         cv = load(cv_model_name)
+        le = load(le_model_name)
         sk = load(sk_model_name)
         lr = load(lr_model_name)
         gram_dict = defaultdict(float)
@@ -135,18 +136,20 @@ def update_model(sentence, grams, cv_model_name, sk_model_name, lr_model_name):
 
 
 
-def predict(sentence, cv_model_name, sk_model_name, lr_model_name):
+def predict(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name):
     X = [sentence]
-    label_dict = {0:"NEGATIVE", 1:"POSITIVE"}
+    #label_dict = {0:"NEGATIVE", 1:"POSITIVE"}
     try:
         cv = load(cv_model_name)
+        le = load(le_model_name)
         sk = load(sk_model_name)
         lr = load(lr_model_name)
         X = cv.transform(X)
         X = sk.transform(X)
-        print(label_dict[lr.predict(X)[0]])
-        print(lr.predict_proba(X))
-        return [label_dict[lr.predict(X)[0]], 1-lr.predict_proba(X)[0][0]]
+        # print(label_dict[lr.predict(X)[0]])
+        # print(lr.predict_proba(X))
+        label = le.inverse_transform([lr.predict(X)])[0]
+        return [label, 1-lr.predict_proba(X)[0][0]]
     except Exception as e:
         print(e)
         return ["NEGATIVE",None] if random.random() > 0.5 else ["POSITIVE",None]
