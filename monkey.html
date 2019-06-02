@@ -1,0 +1,65 @@
+<h3 class="small-heading sandbox-heading">Statistics</h3>
+<div class="category-stats statistics">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row stat-grid">
+        <div class="col-sm-4 stat-cell">
+          <div class="clickable samples-count" data-bind="click: $component.clickViewSamples.bind($component)">
+            <div class="stat-number" data-bind="number: $component.subtreeSampleCountObs()(category().id)">17</div>
+              <div class="stat-title"></div>
+            </div>
+          </div>
+          <div class="col-sm-4 stat-cell">
+            <category-chart params="title: 'Accuracy', icon: 'puzzle', disabled: category().children_count() <= 0, value: $component.fmtPct(category().accuracy())">
+              <div class="radial-progress-div" data-bind="radialProgressBind: {'value': value, 'is_samples': disabled }">
+                <svg class="radial-svg" width="80" height="80">
+                  <g transform="translate(0,0)">
+                    <g class="component">
+                      <rect class="background" width="80" height="80"></rect>
+                      <path transform="translate(40,40)" d="M0,40A40,40 0 1,1 0,-40A40,40 0 1,1 0,40M0,34A34,34 0 1,0 0,-34A34,34 0 1,0 0,34Z"></path>
+                      <text class="radial-progress-label" transform="translate(40,96)"></text>
+                    </g>
+                    <g class="arcs">
+                      <path class="arc" transform="translate(40,40)" d="M2.4492935982947065e-15,-40A40,40 0 0,1 38.481106863443436,10.918077420693004L32.708940833926924,9.280365807589053A34,34 0 0,0 2.0818995585505003e-15,-34Z"></path>
+                      <path class="arc2" transform="translate(40,40)" d="M2.0818995585505003e-15,-34A34,34 0 0,1 2.0818995585505003e-15,-34L1.7145055188062944e-15,-28A28,28 0 0,0 1.7145055188062944e-15,-28Z"></path>
+                    </g>
+                    <g class="labels"><text class="radial-progress-label" y="45.333333333333336" x="40" width="80" style="font-size: 16px;">29%</text></g>
+                  </g>
+                </svg>
+              </div>
+              <div class="stat-title">
+                <i class="typcn" data-bind="style: 'typcn-' + icon"></i>
+                <span data-bind="text: title">Accuracy</span>
+              </div>
+            </category-chart>
+          </div>
+          <div class="col-sm-4 stat-cell">
+            <category-chart params="title: 'F1 Score',icon: 'puzzle',disabled: category().children_count() <= 0,value: $component.fmtPct(category().getF1())">
+              <div class="radial-progress-div" data-bind="radialProgressBind: {'value': value, 'is_samples': disabled }">
+                <svg class="radial-svg" width="80" height="80">
+                  <g transform="translate(0,0)">
+                    <g class="component">
+                      <rect class="background" width="80" height="80"></rect>
+                      <path transform="translate(40,40)" d="M0,40A40,40 0 1,1 0,-40A40,40 0 1,1 0,40M0,34A34,34 0 1,0 0,-34A34,34 0 1,0 0,34Z"></path>
+                      <text class="radial-progress-label" transform="translate(40,96)"></text>
+                    </g>
+                    <g class="arcs">
+                      <path class="arc" transform="translate(40,40)" d="M2.4492935982947065e-15,-40A40,40 0 0,1 36.29937698164468,16.803429136472253L30.854470434397975,14.282914766001417A34,34 0 0,0 2.0818995585505003e-15,-34Z"></path>
+                      <path class="arc2" transform="translate(40,40)" d="M2.0818995585505003e-15,-34A34,34 0 0,1 2.0818995585505003e-15,-34L1.7145055188062944e-15,-28A28,28 0 0,0 1.7145055188062944e-15,-28Z"></path>
+                    </g>
+                    <g class="labels">
+                      <text class="radial-progress-label" y="45.333333333333336" x="40" width="80" style="font-size: 16px;">32%</text>
+                    </g>
+                  </g>
+                </svg>
+              </div>
+              <div class="stat-title">
+                <i class="typcn" data-bind="style: 'typcn-' + icon"></i>
+                <span data-bind="text: title">F1 Score</span>
+              </div>
+          </category-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
