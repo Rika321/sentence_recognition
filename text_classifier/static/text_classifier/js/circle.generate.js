@@ -3,10 +3,12 @@
 var train_acc = parseInt(document.getElementById("train_acc").value*100);
 var F1Score = parseInt(document.getElementById("F1Score").value*100);
 var total_sample = parseInt(document.getElementById("total_sample").value);
+console.log("acc",train_acc);
+console.log("f1", F1Score);
 
 
 var myCircle1 = Circles.create({
-  id:                  'circles-1',
+  id:                  'circles_ts',
   radius:              60,
   value:               total_sample,
   maxValue:            10000,
@@ -22,7 +24,7 @@ var myCircle1 = Circles.create({
   styleText:           true
 });
 var myCircle2 = Circles.create({
-  id:                  'circles-2',
+  id:                  'circles_acc',
   radius:              60,
   value:               train_acc,
   maxValue:            100,
@@ -38,7 +40,7 @@ var myCircle2 = Circles.create({
   styleText:           true
 });
 var myCircle3 = Circles.create({
-  id:                  'circles-3',
+  id:                  'circles_f1',
   radius:              60,
   value:               F1Score,
   maxValue:            100,

@@ -102,10 +102,10 @@
                                       <h2 > {{ total_sample }} </h2>
                                     </div>
                                     <div class="col-sm-4" >
-                                      <div class="circle" id="circles-2" ></div>
+                                      <div class="circle" id="circles_acc" ></div>
                                     </div>
                                     <div class="col-sm-4">
-                                      <div class="circle" id="circles-4"></div>
+                                      <div class="circle" id="circles_f1"> </div>
                                     </div>
                                 </div>
 
@@ -197,6 +197,44 @@
                     <!-- <input id="input_text" type="text" name="up_tsv_file" value="{{up_tsv_file}}"><br/> -->
                     <button type="submit" class="btn btn-primary">EVALUATE</button>
                   </form>
+
+                  {% if F1Score %}
+                      <h1>Performance Statistics</h1>
+                      <input type="hidden" id="train_acc" name="train_acc" value="{{ train_acc }}">
+                      <input type="hidden" id="F1Score" name="F1Score" value="{{ F1Score }}">
+                      <input type="hidden" id="total_sample" name="total_sample" value="{{ total_sample }}">
+
+                      <div class="container" style="border:solid 3px #D3B6C6;">
+                          <div class="container" style="margin-top:2%;margin-left:10%;margin-right:5%">
+                              <div class="col-sm-4" style="margin-top:4%">
+                                <h2 > {{ total_sample }} </h2>
+                              </div>
+                              <div class="col-sm-4" >
+                                <div class="circle" id="circles_acc" ></div>
+                              </div>
+                              <div class="col-sm-4">
+                                <div class="circle" id="circles_f1"></div>
+                              </div>
+                          </div>
+
+                          <div class="container" style="margin-left:10%;margin-right:5%">
+                              <div class="col-sm-4">
+                                <h2>Text</h2>
+                              </div>
+                              <div class="col-sm-4" >
+                                <h2>Accuracy</h2>
+                              </div>
+                              <div class="col-sm-4">
+                                <h2>F1Score</h2>
+                              </div>
+                          </div>
+                      </div>
+                      <script src="{% static "text_classifier/js/circle.min.js" %}"></script>
+                      <script src="{% static "text_classifier/js/circle.utility.js" %}"></script>
+                      <script src="{% static "text_classifier/js/circle.generate.js" %}"></script>
+                  {% endif %}
+
+
          {% else %}
              <!-- <p> Analyzing Bag: {{mode}}</p> -->
           {% endif %}

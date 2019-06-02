@@ -119,13 +119,14 @@ def simple_eval(request):
         class Data: pass
         sentiment = Data()
         sentiment.train_data, sentiment.train_labels = transfer_stream(request.FILES["up_dev_file"])
+        counter = len(sentiment.train_labels)
         print("transfered!")
         dev_stat_ = dev_statistics_sentiment(sentiment, cv_model_name, sk_model_name, lr_model_name)
         print(dev_stat_)
         context = {
             'PresicionScore':dev_stat_['PresicionScore'],
             'F1Score':dev_stat_['F1Score'],
-            'total_sample' : count_labeled_examples(filename),
+            'total_sample' : counter,
             'devname': devname,
             "train_acc" : dev_stat_['AccuracyScore'],
             'mode' : mode,
