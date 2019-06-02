@@ -22,7 +22,7 @@ var myCircle2 = Circles.create({
   maxValue:            100,
   width:               10,
   text:                function(value){return value + '%';},
-  colors:              ['#D3B6C6', '#4B253A'],
+  colors:              ['#99CCFF', '#CC6666'],
   duration:            400,
   wrpClass:            'circles-wrp',
   textClass:           'circles-text',
@@ -38,7 +38,7 @@ var myCircle3 = Circles.create({
   maxValue:            100,
   width:               10,
   text:                function(value){return value + '%';},
-  colors:              ['#D3B6C6', '#4B253A'],
+  colors:              ['#99CC66', '#336633'],
   duration:            400,
   wrpClass:            'circles-wrp',
   textClass:           'circles-text',
@@ -54,7 +54,7 @@ var myCircle4 = Circles.create({
   maxValue:            100,
   width:               10,
   text:                function(value){return value + '%';},
-  colors:              ['#D3B6C6', '#4B253A'],
+  colors:              ['#99CCFF', '#003366'],
   duration:            400,
   wrpClass:            'circles-wrp',
   textClass:           'circles-text',
@@ -63,7 +63,7 @@ var myCircle4 = Circles.create({
   styleWrapper:        true,
   styleText:           true
 });
-var myCircle2 = Circles.create({
+var myCircle5 = Circles.create({
   id:                  'circles-5',
   radius:              60,
   value:               43,
