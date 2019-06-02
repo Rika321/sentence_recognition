@@ -65,10 +65,10 @@
 }
 #myBar1 {
   width: 0%;
-  height: 30px;
+  height: 25px;
   background-color: #F08080;
   text-align: center;
-  line-height: 30px;
+  line-height: 25px;
   color: white;
 }
 #myProgress2 {
@@ -77,10 +77,10 @@
 }
 #myBar2 {
   width: 0%;
-  height: 30px;
+  height: 25px;
   background-color: #FFA07A;
   text-align: center;
-  line-height: 30px;
+  line-height: 25px;
   color: white;
 }
 

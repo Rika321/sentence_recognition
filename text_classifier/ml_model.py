@@ -145,7 +145,8 @@ def predict(sentence, cv_model_name, sk_model_name, lr_model_name):
         X = cv.transform(X)
         X = sk.transform(X)
         print(label_dict[lr.predict(X)[0]])
-        return [label_dict[lr.predict(X)[0]], lr.predict_proba(X)[0][0]]
+        print(lr.predict_proba(X))
+        return [label_dict[lr.predict(X)[0]], 1-lr.predict_proba(X)[0][0]]
     except Exception as e:
         print(e)
         return ["NEGATIVE",None] if random.random() > 0.5 else ["POSITIVE",None]

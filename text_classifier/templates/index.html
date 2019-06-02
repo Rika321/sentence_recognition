@@ -54,7 +54,6 @@
 <div class="container">
 
 </div>
-
   <div class="container" id="container">
     <div class="row">
       <div class="col-md-12">
@@ -181,6 +180,7 @@
           <div  class="form-group">
             <p id='sentence'> Analyzing sentence: {{sentence}}</p>
             <p> This sentence is : {{label}}</p>
+                <span id="probability" style="display: none;">{{score}}</span>
                 <div style="max-height: 370px; max-width: 720px;">
                     <input type="hidden" id="sent_conf" name="sent_conf" value="{{ sent_conf }}">
                     <h4>Positive</h4>
@@ -193,9 +193,10 @@
                       <div id="myBar2">0%</div>
                     </div>
                     <br>
-                    <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
                     <br>
                 </div>
+                <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
+
             <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
             <a class="btn btn-primary" id="explain_btn">explain</a>
             <a class="btn btn-primary" id="plot_btn">plot</a>
@@ -207,7 +208,7 @@
               <div class="explain-bar" id="bar_minus">
               <img class="plus_minus_sign" width="25px" vertical-align="middle" src={% static "text_classifier/img/minus_sign.png" %}>
               </div>
-              <div>
+              <div id="explain_table_whole">
                 <table class="table">
                   <thead>
                     <tr>
@@ -220,6 +221,7 @@
                   </tbody>
                 </table>
               </div>
+              <a class="btn btn-primary" id="hide_table">hide table</a>
               <a class="btn btn-primary" id="hide_explain">hide</a>
             </div>
 

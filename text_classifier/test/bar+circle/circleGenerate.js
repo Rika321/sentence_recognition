@@ -63,6 +63,22 @@ var myCircle4 = Circles.create({
   styleWrapper:        true,
   styleText:           true
 });
+var myCircle2 = Circles.create({
+  id:                  'circles-5',
+  radius:              60,
+  value:               43,
+  maxValue:            100,
+  width:               10,
+  text:                function(value){return value;},
+  colors:              ['#FFFFFF', '#FFFFFF'],
+  duration:            400,
+  wrpClass:            'circles-wrp',
+  textClass:           'circles-text',
+  valueStrokeClass:    'circles-valueStroke',
+  maxValueStrokeClass: 'circles-maxValueStroke',
+  styleWrapper:        true,
+  styleText:           true
+});
 // Example 1
 //function(currentValue) {/
 //  return '$'+currentValue;

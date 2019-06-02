@@ -1,1 +1,1 @@
-{"devname": "data/tes2", "sentence": "test is bad", "mode": "train_mode"}
+{"devname": "data/twitter", "sentence": "food is good", "mode": "pred_mode"}
