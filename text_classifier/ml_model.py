@@ -149,7 +149,7 @@ def predict(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name
         # print(label_dict[lr.predict(X)[0]])
         # print(lr.predict_proba(X))
         label = le.inverse_transform([lr.predict(X)])[0]
-        return [label, 1-lr.predict_proba(X)[0][0], le.classes_]
+        return [label, lr.predict_proba(X)[0][0], le.classes_]
     except Exception as e:
         print(e)
         return ["NEGATIVE",None, None] if random.random() > 0.5 else ["POSITIVE",None,None]
