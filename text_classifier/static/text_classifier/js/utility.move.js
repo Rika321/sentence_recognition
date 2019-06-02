@@ -7,7 +7,7 @@
   // var confidence =  document.getElementById("confidence_bar")
   // var confidence_p =  document.getElementById("confidence_bar").value;
   // var pp = parseInt(parseFloat($("#sent_conf").html())*100);
-  var pp = 100-sent_conf;
+  var pp = sent_conf;
   console.log(pp);
   // console.log(confidence);
 

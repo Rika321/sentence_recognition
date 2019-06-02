@@ -254,8 +254,10 @@ def results(request):
     le_model_name = devname+"/le.joblib"
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
-    label, score = predict(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name)
+    label, score, classes_ = predict(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name)
     context = {
+        "class_a": classes_[0],
+        "class_b": classes_[1],
         "devname": None if devname is None else devname[5:],
         "sentence": sentence,
         "label": str(label),

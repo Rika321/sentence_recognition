@@ -13,7 +13,7 @@ from sklearn import metrics
 from joblib import dump, load
 from collections import defaultdict
 import random
-app = Flask(__name__)
+# app = Flask(__name__)
 
 
 def read_files(trainname):
@@ -149,10 +149,10 @@ def predict(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name
         # print(label_dict[lr.predict(X)[0]])
         # print(lr.predict_proba(X))
         label = le.inverse_transform([lr.predict(X)])[0]
-        return [label, 1-lr.predict_proba(X)[0][0]]
+        return [label, 1-lr.predict_proba(X)[0][0], le.classes_]
     except Exception as e:
         print(e)
-        return ["NEGATIVE",None] if random.random() > 0.5 else ["POSITIVE",None]
+        return ["NEGATIVE",None, None] if random.random() > 0.5 else ["POSITIVE",None,None]
 
 
 def read_unlabeled(tarfname, sentiment):
@@ -204,18 +204,41 @@ def read_tsv(fname):
 if __name__ == "__main__":
     print("Reading data")
     tarfname = "sentiment.tar.gz"
-    filename = "labeled_collection.tsv"
+    filename = "review_train.tsv"
 
     cv_model_name = "cv.joblib"
     sk_model_name = "sk.joblib"
     lr_model_name = "lr.joblib"
+    le_model_name = "le.joblib"
 
-    sentiment = read_files(filename)
-    print("\nTraining classifier")
-    transform_data(sentiment, cv_model_name)
-    select_feature(sentiment, sk_model_name)
-    train_classifier( sentiment.trainX_select, sentiment.trainy,lr_model_name)
+    # sentiment = read_files(filename)
+    # print("\nTraining classifier")
+    # transform_data(sentiment, cv_model_name, le_model_name)
+    # select_feature(sentiment, sk_model_name)
+    # train_classifier( sentiment.trainX_select, sentiment.trainy,lr_model_name)
+
+    cv = load(cv_model_name)
+    le = load(le_model_name)
+    sk = load(sk_model_name)
+    lr = load(lr_model_name)
+    mask = sk.get_support()  # list of booleans
+    new_features = []  # The list of your K best features
+
+    sorted(cv.vocabulary_.items, key=lambda x: x[1])
+
+    print(cv.vocabulary_)
+
+    feature_names = len(cv.vocabulary_)*[""]
+    for name,index in cv.vocabulary_.items():
+        feature_names[index] = name
+    for bool, feature in zip(mask, feature_names):
+        if bool:
+            new_features.append(feature)
+    total = sorted(zip(lr.coef_[0], new_features))
+    print(total[:10])
+    print(total[-10:])
+
 
     #sentence = "food is very bad"
-    sentence = "service is very awesome"
-    print("prediction result:", predict(sentence, cv_model_name, sk_model_name,lr_model_name))
+    # sentence = "service is very awesome"
+    # print("prediction result:", predict(sentence, cv_model_name, le_model_name, sk_model_name,lr_model_name))
