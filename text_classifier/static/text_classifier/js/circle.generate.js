@@ -69,22 +69,3 @@ var myCircle4 = Circles.create({
   styleWrapper:        true,
   styleText:           true
 });
-// Example 1
-//function(currentValue) {/
-//  return '$'+currentValue;
-//};
-// // Example 2
-// function() {
-//   return this.getPercent() + '%';
-// }
-//
-// myCircle.updateRadius(Number 100)
-// myCircle.updateWidth(Number width)
-// myCircle.updateColors(Array colors)
-// myCircle.update(Boolean force)
-// myCircle.getPercent()
-// myCircle.getValue()
-// myCircle.getMaxValue()
-// myCircle.getValueFromPercent(Number percentage)
-// myCircle.htmlifyNumber(Number number[, integerPartClass, decimalPartClass])
-// myCircle.update(Number value [, Number duration])

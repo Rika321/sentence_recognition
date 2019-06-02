@@ -60,3 +60,17 @@ def transfer_labeled_tsvfile(filename, f):
     except Exception as e:
         print(e)
         return 0
+
+
+def transfer_stream(fs):
+    data = []
+    labels = []
+    for line in fs:
+        try:
+            line = line.decode("UTF-8")
+            (label,text) = line.strip().split("\t")
+            labels.append(label)
+            data.append(text)
+        except:
+            print(line)
+    return data, labels

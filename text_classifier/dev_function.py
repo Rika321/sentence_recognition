@@ -9,8 +9,6 @@
 # performance statistics
 # train and dev
 # accuracy, precision, recall, F1_score: assume the model
-
-
 from .ml_model import *
 from sklearn.metrics import precision_score
 import numpy as np
@@ -19,6 +17,8 @@ from collections import defaultdict
 from sklearn.datasets import make_classification
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, classification_report, confusion_matrix
+from .file_processing import *
+
 #
 # X, y = make_classification(n_samples=100, n_informative=10, n_classes=3)
 # sss = StratifiedShuffleSplit(y, n_iter=1, test_size=0.5, random_state=0)
@@ -99,12 +99,10 @@ def dev_statistics(filename, cv_model_name, sk_model_name, lr_model_name):
         print(e)
         return None
 
-def dev_statistics_sentiment(fs, cv_model_name, sk_model_name, lr_model_name):
+def dev_statistics_sentiment(sentiment, cv_model_name, sk_model_name, lr_model_name):
     try:
-        print("evaluate111!!!!")
         result = defaultdict(float)
         tag_dict = defaultdict(int)
-        sentiment = read_my_file_stream(fs)
         lr = load(lr_model_name)
         transform_data(sentiment, cv_model_name)
         select_feature(sentiment, sk_model_name)

@@ -197,25 +197,6 @@ def read_tsv(fname):
                 print(line)
     return data, labels
 
-def read_my_file_stream(fs):
-    class Data: pass
-    sentiment = Data()
-    print("-- train data")
-    data = []
-    labels = []
-    for line in fs:
-        try:
-            line = line.decode("UTF-8")
-            (label,text) = line.strip().split("\t")
-            labels.append(label)
-            data.append(text)
-        except:
-            print(line)
-    sentiment.train_data, sentiment.train_labels = data, labels
-    return sentiment
-
-
-
 
 if __name__ == "__main__":
     print("Reading data")

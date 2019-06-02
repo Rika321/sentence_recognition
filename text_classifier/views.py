@@ -42,7 +42,8 @@ def apply_model(request):
     }
     return HttpResponse(template.render(context, request))
 
-
+# def helper(dev):
+#     ddd
 
 
 def simple_train(request):
@@ -114,15 +115,19 @@ def simple_eval(request):
         cv_model_name = devname+"/cv.joblib"
         sk_model_name = devname+"/sk.joblib"
         lr_model_name = devname+"/lr.joblib"
-        # sentiment = read_file_stream(request.FILES["labeled_tsv_file"])
-        dev_stat_ = dev_statistics(request.FILES["up_tsv_file"], cv_model_name, sk_model_name, lr_model_name)
+        # print("test")
+        class Data: pass
+        sentiment = Data()
+        sentiment.train_data, sentiment.train_labels = transfer_stream(request.FILES["up_dev_file"])
+        print("transfered!")
+        dev_stat_ = dev_statistics_sentiment(sentiment, cv_model_name, sk_model_name, lr_model_name)
         print(dev_stat_)
         context = {
             'PresicionScore':dev_stat_['PresicionScore'],
             'F1Score':dev_stat_['F1Score'],
             'total_sample' : count_labeled_examples(filename),
             'devname': devname,
-            "train_acc" : acc,
+            "train_acc" : dev_stat_['AccuracyScore'],
             'mode' : mode,
             'label': None,
             'data_name': None if devname == None else devname.split("/")[1],
