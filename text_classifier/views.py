@@ -33,11 +33,11 @@ def apply_model(request):
     mode = load_my_session('mode')
     # request.session['devname'] = "data/"+devname
     context = {
-        # 'devname': devname[5:],
+        'devname': None if devname is None else devname[5:],
         'total_sample' : count_labeled_examples(devname),
         'label': None,
         'mode' : mode,
-        'data_name': None if devname == None else devname.split("/")[1],
+        'data_name': None if devname is None else devname.split("/")[1],
         'dataset_name': [""]+os.listdir("data"),
     }
     return HttpResponse(template.render(context, request))
@@ -187,7 +187,7 @@ def eval_mode(request):
     mode = load_my_session('mode')
     devname = load_my_session('devname')
     context = {
-        'devname': devname[5:],
+        'devname': None if devname == None else devname[5:],
         'total_sample' : count_labeled_examples(devname),
         'mode' : mode,
         'label': None,
@@ -205,7 +205,7 @@ def train_mode(request):
     mode = load_my_session('mode')
     devname = load_my_session('devname')
     context = {
-        # 'devname': devname[5:],
+        'devname': None if devname == None else devname[5:],
         'total_sample' : count_labeled_examples(devname),
         'mode' : mode,
         'label': None,
@@ -228,7 +228,7 @@ def index(request):
             # print ("Creation of the directory %s failed" % path)
         template = loader.get_template('index.html')
         context = {
-            # 'devname': devname,
+            'devname': None if devname == None else devname[5:],
             'mode' : mode,
             'data_name': None if devname == None else devname.split("/")[1],
             'dataset_name': [""]+os.listdir("data"),
@@ -259,10 +259,10 @@ def results(request):
     lr_model_name = devname+"/lr.joblib"
     label, score = predict(sentence, cv_model_name, sk_model_name, lr_model_name)
     context = {
-        # "devname": devname[5:],
+        "devname": None if devname == None else devname[5:],
         "sentence": sentence,
         "label": str(label),
-        'mode' : mode,
+        'mode' : None,
         "sent_conf": float(score),
         'data_name': None if devname == None else devname.split("/")[1],
         'dataset_name': [""]+os.listdir("data"),
