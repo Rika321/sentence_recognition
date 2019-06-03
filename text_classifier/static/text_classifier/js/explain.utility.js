@@ -392,6 +392,19 @@ function drawAdjustableBar(sorted_data) {
     });
 }
 
+$(document).on("click", "#hide_bubble", function(e) {
+    var el = $("#bubble_pred")
+    console.log("asdf");
+    if(el.is(':hidden')) {
+         el.show();
+         e.target.innerHTML = "hide bubble";
+     }
+     else {
+        el.hide();
+        e.target.innerHTML = "show bubble";
+    }
+});
+
 $(document).on("click", "#hide_explain", function(e) {
     $(".explain").hide();
 });
