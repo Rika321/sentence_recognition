@@ -20,7 +20,7 @@
 <script src="{% static "text_classifier/js/jquery.poshytip.js" %}"></script>
 <script src="{% static "text_classifier/js/tag.utility.js" %}"></script>
 <script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script>
-
+<script src="https://d3js.org/d3.v3.min.js"></script>
 </head>
 
 
@@ -125,8 +125,22 @@
                             <br>
                             <h1>Word Cloud of Keywords</h1>
                             <div class="container" style="border:solid 3px #D3B6C6;">
-
-                                <div class="container" style="margin-top:2%;margin-bottom:2%;margin-left:5%;margin-right:0%">
+                                <div class="train_class" id = "train_class">
+                                </div>
+                                <script src="{% static "text_classifier/js/bubble.utility.js" %}"></script>
+                                <script type="text/javascript">
+                                    var F1Score = {{ F1Score|safe }};
+                                    var topA_val = {{topA_val|safe}};
+                                    var topA_name = {{topA_name|safe}};
+                                    var topB_val = {{topB_val|safe}};
+                                    var topB_name = {{topB_name|safe}};
+                                    console.log(F1Score);
+                                    $("#train_class").ready(function() {
+                                        console.log( "ready!" );
+                                        displayBubble(topA_val,topA_name,topB_val,topB_name)
+                                    });
+                                </script>
+                                <!-- <div class="container" style="margin-top:2%;margin-bottom:2%;margin-left:5%;margin-right:0%">
 
                                      <div class="col-sm-2" id="con"></div>
                                      <div class="col-sm-10">
@@ -139,7 +153,7 @@
                                       var chart = anychart.pie();chart.title("Dataset Tag Distribution");
                                       chart.data(data);chart.container('con');chart.draw();
                                   });
-                                </script>
+                                </script> -->
                              </div>
                     </div>
                     <br>

@@ -200,6 +200,27 @@ def read_tsv(fname):
                 print(line)
     return data, labels
 
+def topKsignificance(k, cv_model_name,sk_model_name,lr_model_name,le_model_name):
+    cv = load(cv_model_name)
+    le = load(le_model_name)
+    sk = load(sk_model_name)
+    lr = load(lr_model_name)
+    mask = sk.get_support()  # list of booleans
+    new_features = []
+    feature_names = len(cv.vocabulary_)*[""]
+    for name,index in cv.vocabulary_.items():
+        feature_names[index] = name
+    for bool, feature in zip(mask, feature_names):
+        if bool:
+            new_features.append(feature)
+    total = sorted(zip(lr.coef_[0], new_features))
+    topA_val = [zip[0] for zip in total[:k]]
+    topA_name = [zip[1] for zip in total[:k]]
+    topB_val = [zip[0] for zip in total[-k:]]
+    topB_name = [zip[1] for zip in total[-k:]]
+
+    return [topA_val,topA_name,topB_val,topB_name]
+
 
 if __name__ == "__main__":
     print("Reading data")
@@ -211,11 +232,6 @@ if __name__ == "__main__":
     lr_model_name = "lr.joblib"
     le_model_name = "le.joblib"
 
-    # sentiment = read_files(filename)
-    # print("\nTraining classifier")
-    # transform_data(sentiment, cv_model_name, le_model_name)
-    # select_feature(sentiment, sk_model_name)
-    # train_classifier( sentiment.trainX_select, sentiment.trainy,lr_model_name)
 
     cv = load(cv_model_name)
     le = load(le_model_name)
@@ -224,9 +240,13 @@ if __name__ == "__main__":
     mask = sk.get_support()  # list of booleans
     new_features = []  # The list of your K best features
 
-    sorted(cv.vocabulary_.items, key=lambda x: x[1])
-
-    print(cv.vocabulary_)
+    r = re.compile("^[a-zA-Z ]*$")
+    # import enchant
+    # d = enchant.Dict("en_US")
+    # English_words = list(filter(lambda x: d.check(x[0]), cv.vocabulary_.items()))
+    # freq_word = sorted(English_words, key=lambda x: x[1])
+    # print(freq_word[:10])
+    # print(freq_word[-10:])
 
     feature_names = len(cv.vocabulary_)*[""]
     for name,index in cv.vocabulary_.items():

@@ -60,8 +60,13 @@ def simple_train(request):
     select_feature(sentiment,sk_model_name)
     acc = train_classifier( sentiment.trainX_select, sentiment.trainy, lr_model_name)
     dev_stat_ = train_statistics(sentiment, lr_model_name)
-    print(dev_stat_)
+    # print(dev_stat_)
+    topA_val,topA_name,topB_val,topB_name = topKsignificance(20, cv_model_name,sk_model_name,lr_model_name,le_model_name)
     context = {
+        'topA_val': topA_val,
+        'topA_name': topA_name,
+        'topB_val': topB_val,
+        'topB_name': topB_name,
         'PresicionScore':dev_stat_['PresicionScore'],
         'F1Score':dev_stat_['F1Score'],
         'total_sample' : count_labeled_examples(filename),
