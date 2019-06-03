@@ -5,17 +5,44 @@ Array.prototype.contains = function(v) {
     return false;
 };
 
-// {{ F1Score }}
-// var data_from_django = {{ F1Score|safe }};
-// widget.init(data_from_django);
+function getColorByBaiFenBiBubble(bili){
+    var one = (255+255) / 100;
+    var r=0;
+    var g=0;
+    var b=0;
+    if ( bili < 50 ) {
+        g = one * bili;
+        r=255;
+    }
+    if ( bili >= 50 ) {
+        r =  255 - ( (bili - 50 ) * one) ;
+        g = 255;
+    }
+    r = parseInt(r);
+    g = parseInt(g);
+    b = parseInt(b);
+    return "rgb("+r+","+g+","+b+")";
+}
+
+function getColorBubble(cluster, radius){
+    var threshold = 100;
+    var contri = radius;
+    if(cluster == 1){
+        contri = -contri;
+    }
+    if (contri >= threshold){
+        contri = threshold;
+    }else if (contri <= -threshold) {
+        contri = -threshold;
+    }
+    contri += threshold;
+    var percentage = parseInt(contri/(threshold*2)*100.0);
+    var color = getColorByBaiFenBiBubble(percentage);
+    return color;
+}
 
 function displayBubble(topA_val,topA_name,topB_val,topB_name) {
     // console.log("I am wake!");
-    // console.log(topA_val);
-    // console.log(topA_name);
-    // console.log(topB_val);
-    // console.log(topB_name);
-
     var width = 960,
         height = 500,
         padding = 1.5, // separation between same-color nodes
@@ -23,7 +50,8 @@ function displayBubble(topA_val,topA_name,topB_val,topB_name) {
         maxRadius = 12;
 
     var color = d3.scale.ordinal()
-          .range(["#7A99AC", "#E4002B"]);
+        .range(["green","red"]);
+          //.range(["#7A99AC", "#E4002B"]);
 
     // d3.text("word_groups.csv", function(error, text) {
     //   if (error) throw error;
@@ -71,7 +99,7 @@ function displayBubble(topA_val,topA_name,topB_val,topB_name) {
         .on("tick", tick)
         .start();
 
-    var svg = d3.select("#train_class").append("svg")
+    var svg = d3.select(".bubble").append("svg")
         .attr("width", width)
         .attr("height", height);
 
@@ -83,7 +111,7 @@ function displayBubble(topA_val,topA_name,topB_val,topB_name) {
 
     node.append("circle")
         .style("fill", function (d) {
-        return color(d.cluster);
+        return getColorBubble(d.cluster, d.radius);
         })
         .attr("r", function(d){return d.radius})
 
@@ -103,6 +131,7 @@ function displayBubble(topA_val,topA_name,topB_val,topB_name) {
           x: Math.cos(i / m * 2 * Math.PI) * 200 + width / 2 + Math.random(),
           y: Math.sin(i / m * 2 * Math.PI) * 200 + height / 2 + Math.random()
         };
+        // color(d.cluster)
     if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
     return d;
   };

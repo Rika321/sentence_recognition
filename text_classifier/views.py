@@ -260,7 +260,15 @@ def results(request):
     sk_model_name = devname+"/sk.joblib"
     lr_model_name = devname+"/lr.joblib"
     label, score, classes_ = predict(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name)
+    topA_val,topA_name,topB_val,topB_name = topKsignificance(20, cv_model_name,sk_model_name,lr_model_name,le_model_name)
+
+    # top_val =
+
     context = {
+        'topA_val': topA_val if label == classes_[0] else [],
+        'topA_name': topA_name if label == classes_[0] else [],
+        'topB_val': topB_val if label == classes_[1] else [],
+        'topB_name': topB_name if label == classes_[1] else [],
         "class_a": classes_[0],
         "class_b": classes_[1],
         "devname": None if devname is None else devname[5:],
