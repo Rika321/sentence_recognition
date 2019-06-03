@@ -24,7 +24,7 @@ function getColorByBaiFenBiBubble(bili){
     return "rgb("+r+","+g+","+b+")";
 }
 
-function getColorBubble(cluster, radius){
+function getColorBubble(cluster, radius, len){
     var threshold = 100;
     var contri = radius;
     if(cluster == 1){
@@ -37,7 +37,13 @@ function getColorBubble(cluster, radius){
     }
     contri += threshold;
     var percentage = parseInt(contri/(threshold*2)*100.0);
-    var color = getColorByBaiFenBiBubble(percentage);
+    if (len == 0){
+        //console.log("nega");
+        var color = getColorByBaiFenBiBubble(percentage);
+    } else {
+        //console.log("posi");
+        var color = getColorByBaiFenBiBubble(100-percentage);
+    }
     return color;
 }
 
@@ -108,10 +114,9 @@ function displayBubble(topA_val,topA_name,topB_val,topB_name) {
         .data(nodes)
         .enter().append("g").call(force.drag);
 
-
     node.append("circle")
         .style("fill", function (d) {
-        return getColorBubble(d.cluster, d.radius);
+            return getColorBubble(d.cluster, d.radius, topA_name.length);
         })
         .attr("r", function(d){return d.radius})
 

@@ -263,29 +263,34 @@
             <!-- <p id='sentence'> Analyzing sentence: {{sentence}}</p> -->
             <font face = "Comic Sans MS" size="5" id='sentence'>Analyzing sentence: {{sentence}}</font>
             <br>
-            <font face = "Comic Sans MS" size="5" id='sentence'>This sentence is : {{label}}</font>
+            <font face = "Comic Sans MS" size="5" id='sentence'>This sentence is :</font>
+            <font face = "Comic Sans MS" size="5" id='sentence_label'> {{label.0}}</font>
             <!-- <p> This sentence is : {{label}}</p> -->
                 <span id="probability" style="display: none;">{{sent_conf}}</span>
                 <div id= "ppBar" style="max-height: 370px; max-width: 720px;">
                     <input type="hidden" id="sent_conf" name="sent_conf" value="{{ sent_conf }}">
-                    <h4>{{class_a}}</h4>
+                    <h4>{{class_a.0}}</h4>
                     <div id="myProgress1">
                       <div id="myBar1">0%</div>
                     </div>
-                    <h4>{{class_b}}</h4>
+                    <h4>{{class_b.0}}</h4>
                     <div id="myProgress2">
                       <div id="myBar2">0%</div>
                     </div>
                     <br>
                 </div>
+                <span id="label_id" style="display: none;">{{label}}</span>
+                <!-- <span id="probability" style="display: none;">{{sent_conf}}</span> -->
                 <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
                 <script type="text/javascript">
-                    var sent_conf = {{ sent_conf|safe }};
-
+                    var sent_conf   = {{ sent_conf|safe }};
+                    var label      = {{ label    |safe}};
+                    var class_a     = {{ class_a    |safe}};
+                    var class_b     = {{ class_b    |safe}};
 
                     $("#ppBar").ready(function() {
                         console.log( "ready2!" );
-                        drawResult(sent_conf)
+                        drawResult(sent_conf);
                     });
                 </script>
 

@@ -24,8 +24,21 @@ function drawResult(sent_conf) {
     console.log(sent_conf);
     var elem1 = document.getElementById("myBar1");
     var elem2 = document.getElementById("myBar2");
-    elem1.style.backgroundColor = getColorByBaiFenBiMove(sent_conf);
-    elem2.style.backgroundColor = getColorByBaiFenBiMove(100-sent_conf);
+    var sent1 = document.getElementById("sentence_label");
+
+    if(sent_conf < 50){
+        //positive:
+        elem1.style.backgroundColor = getColorByBaiFenBiMove(sent_conf);
+        elem2.style.backgroundColor = getColorByBaiFenBiMove(100-sent_conf);
+        sent1.style.color = getColorByBaiFenBiMove(100-sent_conf);
+    } else {
+        //negative:
+        elem1.style.backgroundColor = getColorByBaiFenBiMove(100-sent_conf);
+        elem2.style.backgroundColor = getColorByBaiFenBiMove(sent_conf);
+        sent1.style.color = getColorByBaiFenBiMove(100-sent_conf);
+    }
+
+
     var width1 = 0;
     var width2 = 0;
     var id1 = setInterval(frame1, 450/(sent_conf));
