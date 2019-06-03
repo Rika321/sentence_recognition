@@ -3,6 +3,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+<font face = "Comic Sans MS">
 <head>
 <title>NLP prediction</title>
 <meta charset="UTF-8">
@@ -28,13 +29,14 @@
     <nav class="navbar navbar-default">
       <div class="container">
         <div class="navbar-header">
-         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <img src="https://cdn.shopify.com/s/files/1/2040/0303/products/Cute_Adorable_Monkey_on_Computer_Cartoon_630020522_grande.jpg?v=1515719127" width="100" height="100">
+
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Monkey Classifier !</a>
-          <img src="https://www.pinclipart.com/picdir/middle/8-88541_file-typing-monkey-svg-wikimedia-commons-monkey-drawing.png" width="75" height="50">
+          <a class="navbar-brand" href="#"><h1>MONKEY CLASSIFIER !</h1></a>
           <!-- https://pbs.twimg.com/profile_images/487262420684259328/vuAlpPf8_400x400.jpeg -->
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
@@ -59,7 +61,8 @@
       <div class="col-md-12">
           <form action="{% url 'text_classifier:apply_model' %}" method="post" enctype="multipart/form-data">
                {% csrf_token %}
-               <label>working on {{ data_name }} dataset</label> <br>
+               <label> <font face = "Comic Sans MS" style="color:#000000" size="5">working on {{ data_name }} dataset</font></label> <br>
+               <font face = "Comic Sans MS">
                <div class="input-group select_group">
                <select name="sel_data" class="select form-control">
                    {%for dataset in dataset_name %}
@@ -71,9 +74,10 @@
                    {% endfor %}
                </select>
                <span class="input-group-btn">
-               <button type="submit" class="btn btn-primary">Select</button>
+               <button type="submit" class="btn btn-primary">SELECT</button>
                </span>
                </div>
+               </font>
            </form>
           {% if mode == 'train_mode' %}
               <div  class="form-group">
@@ -86,7 +90,7 @@
                     </form>
 
                   {% else %}
-                    <p>PLZ add more examples!!!</p>
+                    <label><font face = "Comic Sans MS" style="color:#000000" size="5">Try to type in my review</font></label>
                   {% endif %}
 
                   {% if train_acc %}
@@ -95,11 +99,11 @@
                     <input type="hidden" id="total_sample" name="total_sample" value="{{ total_sample }}">
                     <div class="training_stat">
                         <br>
-                            <h1>Performance Statistics</h1>
-                            <div class="container" style="border:solid 3px #D3B6C6;">
+                            <font face = "Comic Sans MS" style="color:#336699" size="20">Performance Statistics</font>
+                            <div class="container" style="border:solid 0px #2E86C1;">
                                 <div class="container" style="margin-top:2%;margin-left:10%;margin-right:5%">
                                     <div class="col-sm-4" style="margin-top:4%">
-                                      <h2 > {{ total_sample }} </h2>
+                                      <font face = "Comic Sans MS" size="25" style="color:#99CC33"> {{ total_sample }} </font>
                                     </div>
                                     <div class="col-sm-4" >
                                       <div class="circle" id="circles_acc" ></div>
@@ -109,21 +113,23 @@
                                     </div>
                                 </div>
 
-                                <div class="container" style="margin-left:10%;margin-right:5%">
+                                <div class="container" style="margin-left:10%;margin-right:0%">
                                     <div class="col-sm-4">
-                                      <h2>Text</h2>
+                                      <font face = "Comic Sans MS" style="color:#009966" size="15">Text</font>
                                     </div>
                                     <div class="col-sm-4" >
-                                      <h2>Accuracy</h2>
+                                      <font face = "Comic Sans MS" style="color:#DC7633" size="15">Accuracy</font>
                                     </div>
                                     <div class="col-sm-4">
-                                      <h2>F1Score</h2>
+                                      <font face = "Comic Sans MS" style="color:#7D3C98" size="15">F1Score</font>
                                     </div>
+
+
                                 </div>
                             </div>
 
                             <br>
-                            <h1>Word Bubble of Keywords</h1>
+                            <font face = "Comic Sans MS" style="color:#336699" size="20">Word Bubble of Keywords</font>
                             <!-- <div class="container" id = "train_class" style="border:solid 3px #D3B6C6;">
                              </div> -->
                              <div class="bubble" id="bubble_train" style="display:inline-block;">
@@ -151,7 +157,7 @@
 
                    <form action="{% url 'text_classifier:simple_add' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <label for="{{form.phrase.id_for_label}}">Type a Text</label><br/>
+                        <label for="{{form.phrase.id_for_label}}"> </label><br/>
                         <input id="input_text" type="text" name="sentence" value="{{ sentence_text }}"><br/>
                         <label for="{{form.phrase.id_for_label}}">Select a label</label>
                         <select name="label">
@@ -168,13 +174,13 @@
                        {% csrf_token %}
                        <input type="file" name="labeled_tsv_file">
                        <input id="input_text" type="text" name="new_devname" value="{{ new_devname }}"><br/>
-                       <label>classifier name </label> <br/>
-                       <button type="submit" class="btn btn-primary">Upload</button>
+                       <label><font face = "Comic Sans MS" style="color:#000000" size="5">classifier name </font></label> <br/>
+                       <button type="submit" class="btn btn-primary">UPLOAD</button>
                      </form>
                      {% if read_sample %}
                        <p>read {{ read_sample }} examples</p>
                      {% endif %}
-                     <p><a href="{% url 'text_classifier:train_mode' %}">Return to home</a></p>
+                     <p><a href="{% url 'text_classifier:train_mode' %}"> </a></p>
                  </div>
 
           {% elif mode == 'pred_mode' %}
@@ -185,11 +191,12 @@
                     <label for="input_text">Type a review</label>
                     <textarea id="input_text" class="form-control" rows="6" name="sentence" value="{{ sentence_text }}"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Detect</button>
+                    <button type="submit" class="btn btn-primary">DETECT</button>
                   </div>
               </form>
 
           {% elif mode == 'eval_mode' %}
+
                   <form class="form-horizontal" action="{% url 'text_classifier:simple_eval' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="file" name="up_dev_file">
@@ -198,15 +205,15 @@
                   </form>
 
                   {% if F1Score %}
-                      <h1>Performance Statistics</h1>
+                      <font face = "Comic Sans MS" style="color:#336699" size="20">Performance Statistics</font>
                       <input type="hidden" id="train_acc" name="train_acc" value="{{ train_acc }}">
                       <input type="hidden" id="F1Score" name="F1Score" value="{{ F1Score }}">
                       <input type="hidden" id="total_sample" name="total_sample" value="{{ total_sample }}">
 
-                      <div class="container" style="border:solid 3px #D3B6C6;">
+                      <div class="container" style="border:solid 3px #1F618D;">
                           <div class="container" style="margin-top:2%;margin-left:10%;margin-right:5%">
                               <div class="col-sm-4" style="margin-top:4%">
-                                <h2 > {{ total_sample }} </h2>
+                                <font face = "Comic Sans MS" size="25" style="color:#99CC33"> {{ total_sample }} </font>
                               </div>
                               <div class="col-sm-4" >
                                 <div class="circle" id="circles_acc" ></div>
@@ -216,8 +223,8 @@
                               </div>
                           </div>
 
-                          <div class="container" style="margin-left:10%;margin-right:5%">
-                              <div class="col-sm-4">
+                          <!-- <div class="container" style="margin-left:10%;margin-right:0%"> -->
+                              <!-- <div class="col-sm-4">
                                 <h2>Text</h2>
                               </div>
                               <div class="col-sm-4" >
@@ -225,6 +232,17 @@
                               </div>
                               <div class="col-sm-4">
                                 <h2>F1Score</h2>
+                              </div> -->
+                              <div class="container" style="margin-left:10%;margin-right:0%">
+                                  <div class="col-sm-4">
+                                    <font face = "Comic Sans MS" style="color:#009966" size="15">Text</font>
+                                  </div>
+                                  <div class="col-sm-4" >
+                                    <font face = "Comic Sans MS" style="color:#DC7633" size="15">Accuracy</font>
+                                  </div>
+                                  <div class="col-sm-4">
+                                    <font face = "Comic Sans MS" style="color:#7D3C98" size="15">F1Score</font>
+                                  </div>
                               </div>
                           </div>
                       </div>
@@ -242,8 +260,11 @@
         <form class="form-horizontal">
         {% if label %}
           <div  class="form-group">
-            <p id='sentence'> Analyzing sentence: {{sentence}}</p>
-            <p> This sentence is : {{label}}</p>
+            <!-- <p id='sentence'> Analyzing sentence: {{sentence}}</p> -->
+            <font face = "Comic Sans MS" size="5" id='sentence'>Analyzing sentence: {{sentence}}</font>
+            <br>
+            <font face = "Comic Sans MS" size="5" id='sentence'>This sentence is : {{label}}</font>
+            <!-- <p> This sentence is : {{label}}</p> -->
                 <span id="probability" style="display: none;">{{sent_conf}}</span>
                 <div id= "ppBar" style="max-height: 370px; max-width: 720px;">
                     <input type="hidden" id="sent_conf" name="sent_conf" value="{{ sent_conf }}">
@@ -260,7 +281,7 @@
                 <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
                 <script type="text/javascript">
                     var sent_conf = {{ sent_conf|safe }};
-                    
+
 
                     $("#ppBar").ready(function() {
                         console.log( "ready2!" );
@@ -338,5 +359,5 @@
 </footer> -->
 
 
-
+</font>
 </html>

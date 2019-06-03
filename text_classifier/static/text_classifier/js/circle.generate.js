@@ -14,7 +14,7 @@ var myCircle1 = Circles.create({
   maxValue:            10000,
   width:               10,
   text:                function(value){return value + '%';},
-  colors:              ['#D3B6C6', '#4B253A'],
+  colors:              ['#F39C12', '#F1C40F'],
   duration:            400,
   wrpClass:            'circles-wrp',
   textClass:           'circles-text',
@@ -30,13 +30,14 @@ var myCircle2 = Circles.create({
   maxValue:            100,
   width:               10,
   text:                function(value){return value + '%';},
-  colors:              ['#D3B6C6', '#4B253A'],
-  duration:            400,
+  colors:              ['#F9E79F', '#D4AC0D'],
+  duration:            1600,
   wrpClass:            'circles-wrp',
   textClass:           'circles-text',
   valueStrokeClass:    'circles-valueStroke',
   maxValueStrokeClass: 'circles-maxValueStroke',
   styleWrapper:        true,
+  
   styleText:           true
 });
 var myCircle3 = Circles.create({
@@ -46,8 +47,8 @@ var myCircle3 = Circles.create({
   maxValue:            100,
   width:               10,
   text:                function(value){return value + '%';},
-  colors:              ['#D3B6C6', '#4B253A'],
-  duration:            400,
+  colors:              ['#D2B4DE', '#7D3C98'],
+  duration:            1600,
   wrpClass:            'circles-wrp',
   textClass:           'circles-text',
   valueStrokeClass:    'circles-valueStroke',
