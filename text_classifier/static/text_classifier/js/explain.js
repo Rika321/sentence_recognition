@@ -52,6 +52,8 @@ var send = {
 
 var sorted_data;
 
+var local_data;
+
 var barColor = {};
 
 var barPos = {};
@@ -84,6 +86,7 @@ $(document).on("click", "#explain_btn", function(e) {
 		type: "POST",
 		data: send,
 		success: function(data) {
+            local_data = data
 			keys = Object.keys(data);
 			sorted_data = new Array(keys.length);
 			var i=0;
@@ -93,6 +96,7 @@ $(document).on("click", "#explain_btn", function(e) {
 			sorted_data = sorted_data.sort(compare);
 			drawBar();
 			drawTable();
+            fontColor();
 		},
 	    beforeSend: function(xhr, settings) {
 	        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url))
@@ -157,6 +161,7 @@ function drawBar() {
 		barColor[a[0]] = color;
         var subBar = document.createElement("div");
         subBar.className = "draw_bar";
+        subBar.id = a[0].replace(" ","_")+"_bar";
         subBar.style.width = parseInt(len)+"px";
         subBar.style.height = "25px";
         subBar.style.background = color;
@@ -198,8 +203,42 @@ function drawTable() {
 		$(tr).append("<td></td><td>"+sorted_data[i][0]+"</td><td>"+
 			sorted_data[i][1]+"</td>")
 		$(tr).children("td")[0].append(color);
+        $(tr).append("<td><a class=\"btn btn-primary\" "+
+            "id=\"hide_feature\">remove</a></td>");
+        var temp = $(tr).children("td")[3];
+        temp.onclick = function flip(e) {
+            el = $(e.target)
+            if(e.target.innerHTML=="remove") {
+                e.target.innerHTML = "restore";
+                var temp1 = el.parent().prev();
+                temp1.html("0");
+                $("#"+temp1.prev().html().replace(" ","_")+"_bar").hide();
+            }
+            else {
+                e.target.innerHTML = "remove";
+                var temp1 = el.parent().prev();
+                temp1.html(local_data[temp1.prev().html()])
+                $("#"+temp1.prev().html().replace(" ","_")+"_bar").show();
+            }
+        };
+
 		el.append(tr);
 	}
+}
+
+function fontColor() {
+    var el = $("#sentence");
+    var sentence = send["sentence"].split(" ");
+    el.html("Analyzing sentence: ");
+    for(let a of sentence) {
+        var temp;
+        var ch = a.charAt(a.length-1)
+        if(ch<='z' && ch>='a' || ch<='Z' && ch>='A')
+            temp = a
+        else
+            temp = a.substring(0,a.length-1);
+        el.append("<span style=\"color:"+barColor[temp]+";\">"+a+" </span")
+    }
 }
 
 $(document).on("click", "#plot_btn", function(e) {
