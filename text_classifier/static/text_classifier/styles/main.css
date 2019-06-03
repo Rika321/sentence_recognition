@@ -7,6 +7,21 @@
   font-family: Comic Sans MS;
 }
 
+.center {
+  /* margin: auto;
+  width: 90%;
+  /* border: 3px solid green;
+  padding: 10px; */
+}
+
+.center2 {
+  margin: auto;
+  margin-left: 12%;
+  width: 90%;
+  /* border: 3px solid green;
+  padding: 10px; */
+}
+
 .navbar li a, .navbar .navbar-brand {
   color: #922B21 !important;
   height: 60px;
@@ -26,7 +41,7 @@ body {
   height: 100%;
   margin: 0;
   font-family: Arial, Helvetica, Comic Sans MS;
-  background-image: url("https://www.dealfuel.com/wp-content/uploads/2017/07/CSS-Cloud-Animation-Background.gif");
+  /* background-image: url("https://www.dealfuel.com/wp-content/uploads/2017/07/CSS-Cloud-Animation-Background.gif"); */
   background-size: cover;
   /* filter: blur(8px); */
   /* -webkit-filter: blur(8px); */ */

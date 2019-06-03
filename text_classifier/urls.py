@@ -17,5 +17,7 @@ urlpatterns = [
     path('explain', views.explain, name='explain'),
     path('plot', views.plot, name='plot'),
     path('update', views.update, name='update'),
-    path('apply_model', views.apply_model, name='apply_model')
+    path('apply_model', views.apply_model, name='apply_model'),
+    #path('random', views.random, name='random'),
+
 ]

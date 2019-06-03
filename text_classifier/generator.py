@@ -4,7 +4,7 @@ from __future__ import print_function
 import random
 from math import log
 import numpy as np
-from lm import MyModel
+from .lm import MyModel
 import pickle
 
 class MySampler:
@@ -163,20 +163,6 @@ if __name__ == "__main__":
 
     filename = "review_train_clean.tsv"
     corpus = read_tsv_list(filename)
-    print(corpus)
-    # corpus = [
-    #     [ "I", "am", "Sam" ],
-    #     ["I", "am", "Sam"],
-    #     ["I", "am", "Sam"],
-    #     ["I", "am", "Sam"],
-    #     ["I", "am", "Sam"],
-    #     ["I", "am", "Sam"],
-    #     ["I", "am", "Sam"],
-    #     ["I", "am", "Sam"],
-    #     ["I", "am", "Sam"],
-    #     ["he", "is", "bad"],
-    #     ["she", "is", "good"],
-    # ]
     mymodel = MyModel(corpus)
     mymodel.fit_corpus(corpus)
     sampler = MySampler(mymodel)
@@ -189,4 +175,3 @@ if __name__ == "__main__":
     # print(sampler.sample_sentence(['START', 'START'],20))
     for i in range(10):
         print(i, ":", " ".join(str(x) for x in new_sampler.sample_sentence(['START', 'START'], 10)))
-

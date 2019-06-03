@@ -27,8 +27,8 @@
 
 <header>
     <nav class="navbar navbar-default">
-      <div class="container">
-        <div class="navbar-header">
+      <div class="container" tyle="margin-left:17%">
+        <div class="navbar-header" tyle="margin-left:17%">
           <img src="https://cdn.shopify.com/s/files/1/2040/0303/products/Cute_Adorable_Monkey_on_Computer_Cartoon_630020522_grande.jpg?v=1515719127" width="100" height="100">
 
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -53,32 +53,46 @@
 
 <!-- <img src="{% static "text_classifier/styles/tip-yellow.css"  alt=""> -->
 
-<div class="container">
+<div class="container center2">
 
 </div>
-  <div class="container" id="container">
+  <div class="container center2" id="container">
     <div class="row">
       <div class="col-md-12">
-          <form action="{% url 'text_classifier:apply_model' %}" method="post" enctype="multipart/form-data">
-               {% csrf_token %}
-               <label> <font face = "Comic Sans MS" style="color:#000000" size="5">working on {{ data_name }} dataset</font></label> <br>
-               <font face = "Comic Sans MS">
-               <div class="input-group select_group">
-               <select name="sel_data" class="select form-control">
-                   {%for dataset in dataset_name %}
-                   {% if devname == dataset %}
-                    <option value={{dataset}} selected="selected">{{dataset}}</option>
-                   {% else %}
-                    <option value={{dataset}}>{{dataset}}</option>
-                   {% endif %}
-                   {% endfor %}
-               </select>
-               <span class="input-group-btn">
-               <button type="submit" class="btn btn-primary">SELECT</button>
-               </span>
-               </div>
-               </font>
-           </form>
+
+          <div class="container" >
+              <div class="col-sm-8" style="margin-left:-6%">
+                  <form action="{% url 'text_classifier:apply_model' %}" method="post" enctype="multipart/form-data">
+                       {% csrf_token %}
+                       <label> <font face = "Comic Sans MS" style="color:#000000" size="3">working on {{ data_name }} dataset</font></label> <br>
+                       <font face = "Comic Sans MS">
+                       <div class="input-group select_group">
+                       <select name="sel_data" class="select form-control">
+                           {%for dataset in dataset_name %}
+                           {% if devname == dataset %}
+                            <option value={{dataset}} selected="selected">{{dataset}}</option>
+                           {% else %}
+                            <option value={{dataset}}>{{dataset}}</option>
+                           {% endif %}
+                           {% endfor %}
+                       </select>
+                       <span class="input-group-btn">
+                       <button type="submit" class="btn btn-primary">SELECT</button>
+                       </span>
+                       </div>
+                       </font>
+                   </form>
+              </div>
+              <div class="col-sm-4" style="margin-left:-37%">
+                  {% if classes_.1 %}
+                  <label> <font face = "Comic Sans MS" style="color:#ff1a1a" size="5.5">{{ classes_.0 }}</font></label>
+                  <label> <font face = "Comic Sans MS" style="color:#000000;margin-left:2%;margin-right:2%" size="2">VS </font></label>
+                  <label> <font face = "Comic Sans MS" style="color:#33ff33" size="5.5">{{ classes_.1 }}</font></label> <br/>
+                  {% endif %}
+              </div>
+          </div>
+          <br/>
+
           {% if mode == 'train_mode' %}
               <div  class="form-group">
                   <br/>
@@ -88,10 +102,41 @@
                           {% csrf_token %}
                           <button type="submit" class="btn btn-primary">TRAIN!</button>
                     </form>
+                    <br/>
+                    <form action="{% url 'text_classifier:simple_add' %}" method="post" enctype="multipart/form-data">
+                         {% csrf_token %}
+                         <!-- <label for="{{form.phrase.id_for_label}}"> </label><br/> -->
+                         <label><font face = "Comic Sans MS" style="color:#000000" size="5">Try to type in your Sentence</font></label>
+                         <br/>
+                         <input id="input_text" type="text" name="sentence" value="{{ sentence_text }}"><br/>
+                         <label for="{{form.phrase.id_for_label}}">Select a label</label>
+                         <select name="label">
+                           <option value="NEGATIVE"></option>
+                           <option value="NEGATIVE">NEGATIVE</option>
+                           <option value="POSITIVE">POSITIVE</option>
+                         </select>
+                         <br/>
+                         <button type="submit" class="btn btn-primary">ADD</button>
+                     </form>
 
                   {% else %}
-                    <label><font face = "Comic Sans MS" style="color:#000000" size="5">Try to type in my review</font></label>
                   {% endif %}
+
+                  <br/>
+                  <br/>
+
+                  <form action="{% url 'text_classifier:simple_upload' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="labeled_tsv_file">
+                    <input id="input_text" type="text" name="new_devname" value="{{ new_devname }}"><br/>
+                    <label><font face = "Comic Sans MS" style="color:#000000" size="5">classifier name </font></label> <br/>
+                    <button type="submit" class="btn btn-primary">UPLOAD</button>
+                  </form>
+                  <!-- {% if read_sample %}
+                    <p>read {{ read_sample }} examples</p>
+                  {% endif %} -->
+                   <p><a href="{% url 'text_classifier:train_mode' %}"> </a></p>
+
 
                   {% if train_acc %}
                     <input type="hidden" id="train_acc" name="train_acc" value="{{ train_acc }}">
@@ -155,32 +200,8 @@
                   {% endif %}
                   <br/>
 
-                   <form action="{% url 'text_classifier:simple_add' %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <label for="{{form.phrase.id_for_label}}"> </label><br/>
-                        <input id="input_text" type="text" name="sentence" value="{{ sentence_text }}"><br/>
-                        <label for="{{form.phrase.id_for_label}}">Select a label</label>
-                        <select name="label">
-                          <option value="NEGATIVE">NEGATIVE</option>
-                          <option value="POSITIVE">POSITIVE</option>
-                        </select>
-                        <br/>
-                        <button type="submit" class="btn btn-primary">ADD</button>
-                    </form>
 
                     <br/>
-
-                     <form action="{% url 'text_classifier:simple_upload' %}" method="post" enctype="multipart/form-data">
-                       {% csrf_token %}
-                       <input type="file" name="labeled_tsv_file">
-                       <input id="input_text" type="text" name="new_devname" value="{{ new_devname }}"><br/>
-                       <label><font face = "Comic Sans MS" style="color:#000000" size="5">classifier name </font></label> <br/>
-                       <button type="submit" class="btn btn-primary">UPLOAD</button>
-                     </form>
-                     {% if read_sample %}
-                       <p>read {{ read_sample }} examples</p>
-                     {% endif %}
-                     <p><a href="{% url 'text_classifier:train_mode' %}"> </a></p>
                  </div>
 
           {% elif mode == 'pred_mode' %}
@@ -188,12 +209,25 @@
                   <div  class="form-group">
                     {% csrf_token %}
                     <div class="review">
-                    <label for="input_text">Type a review</label>
+                    <label for="input_text">Type a sentence</label>
                     <textarea id="input_text" class="form-control" rows="6" name="sentence" value="{{ sentence_text }}"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">DETECT</button>
+                    <input type="button" class="btn btn-primary" value="CLEAR" onclick="javascript:eraseText();">
+                    <input type="button" class="btn btn-primary" value="RANDOM" onclick="javascript:randomText();">
                   </div>
               </form>
+              <script type="text/javascript">
+                  var sentence_list = {{sentence_list | safe}};
+                  function randomText() {
+                      var sentence = sentence_list[Math.floor(Math.random()*sentence_list.length)];
+                      document.getElementById("input_text").value = String(sentence);
+                  }
+                  function eraseText() {
+                      document.getElementById("input_text").value = "";
+                  }
+              </script>
+
 
           {% elif mode == 'eval_mode' %}
 
@@ -223,16 +257,6 @@
                               </div>
                           </div>
 
-                          <!-- <div class="container" style="margin-left:10%;margin-right:0%"> -->
-                              <!-- <div class="col-sm-4">
-                                <h2>Text</h2>
-                              </div>
-                              <div class="col-sm-4" >
-                                <h2>Accuracy</h2>
-                              </div>
-                              <div class="col-sm-4">
-                                <h2>F1Score</h2>
-                              </div> -->
                               <div class="container" style="margin-left:10%;margin-right:0%">
                                   <div class="col-sm-4">
                                     <font face = "Comic Sans MS" style="color:#009966" size="15">Text</font>
@@ -257,9 +281,9 @@
           {% endif %}
 
 
-        <form class="form-horizontal">
+        <form class="form-horizontal center">
         {% if label %}
-          <div  class="form-group">
+          <div  class="form-group ">
             <!-- <p id='sentence'> Analyzing sentence: {{sentence}}</p> -->
             <font face = "Comic Sans MS" size="5" id='sentence'>Analyzing sentence: {{sentence}}</font>
             <br>
@@ -294,10 +318,13 @@
                     });
                 </script>
 
-
-                <div class="bubble" id="bubble_pred">
-                </div>
+                <a class="btn btn-primary" id="explain_btn">explain</a>
+                <a class="btn btn-primary" id="plot_btn">plot</a>
+                <a class="btn btn-primary" href="{% url 'text_classifier:index'%}">main page</a>
                 <a class="btn btn-primary" id="hide_bubble">hide bubble</a>
+
+                <div class="bubble center" id="bubble_pred">
+                </div>
 
                 <script src="{% static "text_classifier/js/bubble.utility.js" %}"></script>
                 <script type="text/javascript">
@@ -312,10 +339,10 @@
                 </script>
 
             <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
-            <a class="btn btn-primary" id="explain_btn">explain</a>
-            <a class="btn btn-primary" id="plot_btn">plot</a>
-            <a class="btn btn-primary" href="{% url 'text_classifier:index'%}">main page</a>
-            <div class="explain" style="display: none;">
+            <div class="explain center" style="display: none;">
+            <a class="btn btn-primary" id="hide_table">hide table</a>
+            <a class="btn btn-primary" id="hide_explain">hide</a>
+
               <div class="explain-bar" id="bar_plus">
               <img class="plus_minus_sign" width="25px" vertical-align="middle" src={% static "text_classifier/img/plus_sign.png" %}>
               </div>
@@ -335,16 +362,13 @@
                   </tbody>
                 </table>
               </div>
-              <a class="btn btn-primary" id="hide_table">hide table</a>
-              <a class="btn btn-primary" id="hide_explain">hide</a>
             </div>
 
             <!-- adjustableplot -->
-            <div class="plot" style="display: none;">
-                <div id="chartContainer" style="height: 370px; max-width: 720px;"></div>
-                <!-- <div id="chartContainer2" style="height: 370px; max-width: 720px;"></div> -->
-                <a class="btn btn-primary" id="hide_plot">hide</a>
-                <a class="btn btn-primary" id="save_plot">save</a>
+            <div class="plot center" style="display: none;">
+                <a class="btn btn-primary" id="hide_plot">hide_plot</a>
+                <a class="btn btn-primary" id="save_plot">save_plot</a>
+                <div id="chartContainer" style="max-height: 370px; max-width: 1020px;"></div>
             </div>
           </div>
         {% else %}

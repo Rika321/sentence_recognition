@@ -15,6 +15,7 @@ from django import forms
 import os
 import shutil
 from django.http import JsonResponse
+from .generator import *
 import json
 
 filename = ''
@@ -30,8 +31,26 @@ def apply_model(request):
     devname    = "data/"+request.POST.get('sel_data')
     add_save_my_session('devname',devname)
     mode = load_my_session('mode')
-    # request.session['devname'] = "data/"+devname
+    devname = load_my_session('devname')
+    mode = load_my_session('mode')
+    random_sentence_list = []
+    classes_ = []
+    try:
+        le_model_name = devname+"/le.joblib"
+        le = load(le_model_name)
+        classes_=le.classes_
+        trigram_model_name = devname+"/trigram.file"
+        with open(trigram_model_name, "rb") as f:
+            new_sampler = pickle.load(f)
+        for i in range(20):
+            random_sentence = " ".join(new_sampler.sample_sentence(['START', 'START'], 10))
+            random_sentence_list.append(random_sentence)
+    except:
+        pass
+    # print(classes_)
     context = {
+        'classes_':classes_,
+        'sentence_list': random_sentence_list,
         'devname': None if devname is None else devname[5:],
         'total_sample' : count_labeled_examples(devname),
         'label': None,
@@ -50,6 +69,17 @@ def simple_train(request):
     mode = load_my_session('mode')
     devname = load_my_session('devname') #request.session['devname']
     filename = devname+"/labeled_collection.tsv"
+
+    #bag of word
+    trigram_model_name = devname+"/trigram.file"
+    corpus = read_tsv_list(filename)
+    mymodel = MyModel(corpus)
+    mymodel.fit_corpus(corpus)
+    sampler = MySampler(mymodel)
+    with open(trigram_model_name, "wb+") as f:
+        pickle.dump(sampler, f, pickle.HIGHEST_PROTOCOL)
+
+
     cv_model_name = devname+"/cv.joblib"
     le_model_name = devname+"/le.joblib"
     sk_model_name = devname+"/sk.joblib"
@@ -60,9 +90,12 @@ def simple_train(request):
     select_feature(sentiment,sk_model_name)
     acc = train_classifier( sentiment.trainX_select, sentiment.trainy, lr_model_name)
     dev_stat_ = train_statistics(sentiment, lr_model_name)
-    # print(dev_stat_)
+    le = load(le_model_name)
+    classes_=le.classes_
     topA_val,topA_name,topB_val,topB_name = topKsignificance(20, cv_model_name,sk_model_name,lr_model_name,le_model_name)
     context = {
+        'classes_':classes_,
+        'sentence_list': [],
         'topA_val': topA_val,
         'topA_name': topA_name,
         'topB_val': topB_val,
@@ -92,7 +125,8 @@ def simple_add(request):
         filename = devname+"/labeled_collection.tsv"
         counter = transfer_one_line(filename, sentence, label)
         context = {
-            'total_sample' : count_labeled_examples(devname),
+            'sentence_list': [],
+            'total_sample' : count_labeled_examples(filename),
             'mode' : mode,
             'label': None,
             'data_name': None if devname is None else devname.split("/")[1],
@@ -220,6 +254,18 @@ def index(request):
     add_save_my_session('mode', 'pred_mode')
     devname = load_my_session('devname')
     mode = load_my_session('mode')
+
+    random_sentence_list = []
+    try:
+        trigram_model_name = devname+"/trigram.file"
+        with open(trigram_model_name, "rb") as f:
+            new_sampler = pickle.load(f)
+        for i in range(20):
+            random_sentence = " ".join(new_sampler.sample_sentence(['START', 'START'], 10))
+            random_sentence_list.append(random_sentence)
+    except:
+        pass
+
     if request.method == "GET":
         # try:
         #     os.makedirs("data")
@@ -229,6 +275,7 @@ def index(request):
             # print ("Creation of the directory %s failed" % path)
         template = loader.get_template('index.html')
         context = {
+            'sentence_list': random_sentence_list,
             'devname': None if devname is None else devname[5:],
             'mode' : mode,
             'data_name': None if devname is None else devname.split("/")[1],
@@ -241,11 +288,36 @@ def index(request):
         sentence = request.POST.get('sentence')
         template = loader.get_template('index.html')
         context = {
+            'sentence_list': random_sentence_list,
             'label': sentence,
             'data_name': None if devname is None else devname.split("/")[1],
             'dataset_name': [""]+os.listdir("data"),
         }
         return HttpResponse(template.render(context, request))
+
+# def random(request):
+#     add_save_my_session('mode', 'pred_mode')
+#     devname = load_my_session('devname')
+#     mode = load_my_session('mode')
+#     template = loader.get_template('index.html')
+#     trigram_model_name = devname+"/trigram.file"
+#     with open(trigram_model_name, "rb") as f:
+#         new_sampler = pickle.load(f)
+#     sentence_list = new_sampler.sample_sentence(['START', 'START'], 10)
+#     # print(sentence_text)
+#     sentence_text = " ".join(sentence_list)
+#     print(sentence_text)
+#     context = {
+#         'sentence_list':sentence_text,
+#         'devname': None if devname is None else devname[5:],
+#         'mode' : mode,
+#         'data_name': None if devname is None else devname.split("/")[1],
+#         'dataset_name': [""]+os.listdir("data"),
+#         'label': None,
+#     }
+#     return HttpResponse(template.render(context, request))
+
+
 
 # Create your views here.
 def results(request):
