@@ -1,27 +1,44 @@
 .navbar {
-  /*margin-bottom: 0;*/
-  background-color: ##f8f8f8;
-  z-index: 9999;
-  /*border: 0;*/
-  font-size: 12px !important;
-  line-height: 1.42857143 !important;
+  background-color: #F2D7D5;
+  font-size: 25px !important;
   letter-spacing: 4px;
-  /*border-radius: 0;*/
+  height: 100px;
+  font-family: Monospace;
 }
 
 .navbar li a, .navbar .navbar-brand {
-  color: #53E5EC !important;
+  color: #922B21 !important;
+  height: 60px;
 }
 
 .navbar-nav li a:hover, .navbar-nav li.active a {
-  color: #f4511e !important;
-  background-color: #fff !important;
+  color: #922B21 !important;
+  background-color: #E6B0AA !important;
 }
 
 .navbar-default .navbar-toggle {
-  border-color: #53E5EC;
+  border-color: #922B21;
   color: #53E5EC !important;
 }
+
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  /* background-image: url("https://cdn.shopify.com/s/files/1/2040/0303/products/Cute_Adorable_Monkey_on_Computer_Cartoon_630020522_grande.jpg?v=1515719127");
+  /* filter: blur(8px); */
+  /* -webkit-filter: blur(8px); */ */
+}
+/* * { box-sizing: border-box; }
+.bg-image {
+  background-image: url("https://cdn.shopify.com/s/files/1/2040/0303/products/Cute_Adorable_Monkey_on_Computer_Cartoon_630020522_grande.jpg?v=1515719127");
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+} */
 
 
 .errorlist{

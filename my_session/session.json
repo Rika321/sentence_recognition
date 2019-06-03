@@ -1,1 +1,1 @@
-{"devname": "data/mit", "sentence": "food is great", "mode": "train_mode"}
+{"devname": "data/amazon", "sentence": "food is good", "mode": "pred_mode"}

@@ -147,7 +147,7 @@ def predict(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name
         X = cv.transform(X)
         X = sk.transform(X)
         # print(label_dict[lr.predict(X)[0]])
-        # print(lr.predict_proba(X))
+        print(lr.predict_proba(X)[0])
         label = le.inverse_transform([lr.predict(X)])[0]
         return [label, lr.predict_proba(X)[0][0], le.classes_]
     except Exception as e:
@@ -218,7 +218,6 @@ def topKsignificance(k, cv_model_name,sk_model_name,lr_model_name,le_model_name)
     topA_name = [zip[1] for zip in total[:k]]
     topB_val = [zip[0] for zip in total[-k:]]
     topB_name = [zip[1] for zip in total[-k:]]
-
     return [topA_val,topA_name,topB_val,topB_name]
 
 

@@ -21,32 +21,32 @@
 <script src="{% static "text_classifier/js/tag.utility.js" %}"></script>
 <script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script>
 <script src="https://d3js.org/d3.v3.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-
 
 <header>
     <nav class="navbar navbar-default">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">NLP Engine</a>
+          <a class="navbar-brand" href="#">Monkey Classifier !</a>
+          <img src="https://www.pinclipart.com/picdir/middle/8-88541_file-typing-monkey-svg-wikimedia-commons-monkey-drawing.png" width="75" height="50">
+          <!-- https://pbs.twimg.com/profile_images/487262420684259328/vuAlpPf8_400x400.jpeg -->
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav navbar-right">
             <li><a id = "pred_mode"  href = "{% url 'text_classifier:index' %}">PREDICT</a></li>
             <li><a id = "eval_mode"  href = "{% url 'text_classifier:eval_mode' %}">EVALUATE</a></li>
             <li><a id = "train_mode" href = "{% url 'text_classifier:train_mode' %}">TRAIN</a></li>
-            <!-- <li><a id = "train_mode" href = "{% url 'text_classifier:train_mode' %}">TRAIN_Large</a></li> -->
           </ul>
         </div>
       </div>
     </nav>
 </header>
-
 <body>
 
 <!-- <img src="{% static "text_classifier/styles/tip-yellow.css"  alt=""> -->
@@ -123,38 +123,23 @@
                             </div>
 
                             <br>
-                            <h1>Word Cloud of Keywords</h1>
-                            <div class="container" style="border:solid 3px #D3B6C6;">
-                                <div class="train_class" id = "train_class">
-                                </div>
-                                <script src="{% static "text_classifier/js/bubble.utility.js" %}"></script>
-                                <script type="text/javascript">
-                                    var F1Score = {{ F1Score|safe }};
-                                    var topA_val = {{topA_val|safe}};
-                                    var topA_name = {{topA_name|safe}};
-                                    var topB_val = {{topB_val|safe}};
-                                    var topB_name = {{topB_name|safe}};
-                                    console.log(F1Score);
-                                    $("#train_class").ready(function() {
-                                        console.log( "ready!" );
-                                        displayBubble(topA_val,topA_name,topB_val,topB_name)
-                                    });
-                                </script>
-                                <!-- <div class="container" style="margin-top:2%;margin-bottom:2%;margin-left:5%;margin-right:0%">
-
-                                     <div class="col-sm-2" id="con"></div>
-                                     <div class="col-sm-10">
-                                       <h2>F1Score</h2>
-                                     </div>
-                                </div>
-                                <script>
-                                  var data = [{x: "positive", value: 2235},{x: "negative", value: 3892}];
-                                  anychart.onDocumentReady(function(){
-                                      var chart = anychart.pie();chart.title("Dataset Tag Distribution");
-                                      chart.data(data);chart.container('con');chart.draw();
-                                  });
-                                </script> -->
+                            <h1>Word Bubble of Keywords</h1>
+                            <!-- <div class="container" id = "train_class" style="border:solid 3px #D3B6C6;">
+                             </div> -->
+                             <div class="bubble" id="bubble_train" style="display:inline-block;">
                              </div>
+
+                             <script src="{% static "text_classifier/js/bubble.utility.js" %}"></script>
+                             <script type="text/javascript">
+                                 var topA_val = {{topA_val|safe}};
+                                 var topA_name = {{topA_name|safe}};
+                                 var topB_val = {{topB_val|safe}};
+                                 var topB_name = {{topB_name|safe}};
+                                 $("#bubble_train").ready(function() {
+                                     console.log( "ready!" );
+                                     displayBubble(topA_val,topA_name,topB_val,topB_name)
+                                 });
+                             </script>
                     </div>
                     <br>
                     </div>
@@ -166,7 +151,7 @@
 
                    <form action="{% url 'text_classifier:simple_add' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <label for="{{form.phrase.id_for_label}}">Type a review</label><br/>
+                        <label for="{{form.phrase.id_for_label}}">Type a Text</label><br/>
                         <input id="input_text" type="text" name="sentence" value="{{ sentence_text }}"><br/>
                         <label for="{{form.phrase.id_for_label}}">Select a label</label>
                         <select name="label">
@@ -259,7 +244,7 @@
           <div  class="form-group">
             <p id='sentence'> Analyzing sentence: {{sentence}}</p>
             <p> This sentence is : {{label}}</p>
-                <span id="probability" style="display: none;">{{score}}</span>
+                <span id="probability" style="display: none;">{{sent_conf}}</span>
                 <div style="max-height: 370px; max-width: 720px;">
                     <input type="hidden" id="sent_conf" name="sent_conf" value="{{ sent_conf }}">
                     <h4>{{class_a}}</h4>
@@ -273,6 +258,21 @@
                     <br>
                 </div>
                 <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
+
+                <div class="bubble" id="bubble_pred">
+                </div>
+
+                <script src="{% static "text_classifier/js/bubble.utility.js" %}"></script>
+                <script type="text/javascript">
+                    var topA_val = {{topA_val|safe}};
+                    var topA_name = {{topA_name|safe}};
+                    var topB_val = {{topB_val|safe}};
+                    var topB_name = {{topB_name|safe}};
+                    $("#bubble_pred").ready(function() {
+                        console.log( "ready!" );
+                        displayBubble(topA_val,topA_name,topB_val,topB_name)
+                    });
+                </script>
 
             <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
             <a class="btn btn-primary" id="explain_btn">explain</a>
@@ -309,7 +309,6 @@
                 <a class="btn btn-primary" id="hide_plot">hide</a>
                 <a class="btn btn-primary" id="save_plot">save</a>
             </div>
-
           </div>
         {% else %}
         {% endif %}
@@ -320,6 +319,14 @@
   </div><!-- /container -->
   <!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
   <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> -->
-  <script src="{% static "text_classifier/js/explain.js" %}"></script>
+  <script src="{% static "text_classifier/js/explain.utility.js" %}"></script>
 </body>
+<!-- <footer>
+    <h1>Related Word Bubble</h1>
+    <div class="container" id = "train_class">
+    </div>
+</footer> -->
+
+
+
 </html>

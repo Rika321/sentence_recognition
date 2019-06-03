@@ -1,23 +1,42 @@
 
 
+function getColorByBaiFenBiMove(bili){
+    var one = (255+255) / 100;
+    var r=0;
+    var g=0;
+    var b=0;
+    if ( bili < 50 ) {
+        g = one * bili;
+        r=255;
+    }
+    if ( bili >= 50 ) {
+        r =  255 - ( (bili - 50 ) * one) ;
+        g = 255;
+    }
+    r = parseInt(r);
+    g = parseInt(g);
+    b = parseInt(b);
+    return "rgb("+r+","+g+","+b+")";
+}
+
   var sent_conf = parseInt(document.getElementById("sent_conf").value*100);
 
   var elem1 = document.getElementById("myBar1");
   var elem2 = document.getElementById("myBar2");
-  // var confidence =  document.getElementById("confidence_bar")
-  // var confidence_p =  document.getElementById("confidence_bar").value;
-  // var pp = parseInt(parseFloat($("#sent_conf").html())*100);
-  var pp = sent_conf;
-  console.log(pp);
-  // console.log(confidence);
+  elem1.style.backgroundColor = getColorByBaiFenBiMove(sent_conf);
+  elem2.style.backgroundColor = getColorByBaiFenBiMove(100-sent_conf);
+  // document.getElementById("myProgress1").style.color = getColorByBaiFenBiMove(sent_conf);
+  // document.getElementById("myProgress2").style.color = getColorByBaiFenBiMove(100-sent_conf);
+
+
 
   var width1 = 0;
   var width2 = 0;
-  var id1 = setInterval(frame1, 450/(100-pp));
-  var id2 = setInterval(frame2, 450/pp);
+  var id1 = setInterval(frame1, 450/(sent_conf));
+  var id2 = setInterval(frame2, 450/(100-sent_conf));
 
   function frame1() {
-    if (width1 >= (100-pp)) {
+    if (width1 >= (sent_conf)) {
       clearInterval(id1);
     }
     else {
@@ -27,7 +46,7 @@
     }
   }
   function frame2() {
-    if (width2 >= pp) {
+    if (width2 >= (100-sent_conf)) {
       clearInterval(id2);
     }
     else {
