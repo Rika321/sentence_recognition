@@ -25,7 +25,8 @@ body {
   height: 100%;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  /* background-image: url("https://cdn.shopify.com/s/files/1/2040/0303/products/Cute_Adorable_Monkey_on_Computer_Cartoon_630020522_grande.jpg?v=1515719127");
+  background-image: url("https://www.dealfuel.com/wp-content/uploads/2017/07/CSS-Cloud-Animation-Background.gif");
+  background-size: cover;
   /* filter: blur(8px); */
   /* -webkit-filter: blur(8px); */ */
 }

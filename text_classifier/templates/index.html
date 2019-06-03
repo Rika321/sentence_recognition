@@ -245,19 +245,29 @@
             <p id='sentence'> Analyzing sentence: {{sentence}}</p>
             <p> This sentence is : {{label}}</p>
                 <span id="probability" style="display: none;">{{sent_conf}}</span>
-                <div style="max-height: 370px; max-width: 720px;">
+                <div id= "ppBar" style="max-height: 370px; max-width: 720px;">
                     <input type="hidden" id="sent_conf" name="sent_conf" value="{{ sent_conf }}">
-                    <h4>{{class_b}}</h4>
+                    <h4>{{class_a}}</h4>
                     <div id="myProgress1">
                       <div id="myBar1">0%</div>
                     </div>
-                    <h4>{{class_a}}</h4>
+                    <h4>{{class_b}}</h4>
                     <div id="myProgress2">
                       <div id="myBar2">0%</div>
                     </div>
                     <br>
                 </div>
                 <script src="{% static "text_classifier/js/utility.move.js" %}"></script>
+                <script type="text/javascript">
+                    var sent_conf = {{ sent_conf|safe }};
+                    
+
+                    $("#ppBar").ready(function() {
+                        console.log( "ready2!" );
+                        drawResult(sent_conf)
+                    });
+                </script>
+
 
                 <div class="bubble" id="bubble_pred">
                 </div>
