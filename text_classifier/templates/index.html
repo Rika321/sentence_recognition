@@ -54,7 +54,7 @@
 
 <!-- <img src="{% static "text_classifier/styles/tip-yellow.css"  alt=""> -->
 
-<div class="container center2">
+<div class="container center2" id="content">
 
 </div>
   <div class="container center2" id="container">
@@ -477,7 +477,7 @@
       			  }
       			  sorted_data = sorted_data.sort(compare);
       			  drawBar(sorted_data);
-      			  barColor = drawTable(sorted_data);
+      			  barColor = drawTable(sorted_data, sorted_data);
                   fontColor(sorted_data, barColor);
                   drawAdjustableBar(sorted_data);
               });
@@ -492,12 +492,19 @@
   <!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
   <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> -->
 </body>
-<!-- <footer>
-    <h1>Related Word Bubble</h1>
-    <div class="container" id = "train_class">
-    </div>
-</footer> -->
 
+<footer class="footer">
+    <!-- <nav class="navbar navbar-default"> -->
+      <div class="container">
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <div style="font-size: 20px">
+              Copyright © Ziyi Zeng, Lingheng Zhu, He Qu, <br>
+              Feel free to use any idaes and designs of this sits!
+            </div>
+        </div>
+      </div>
+    <!-- </nav> -->
+</footer>
 
 </font>
 </html>

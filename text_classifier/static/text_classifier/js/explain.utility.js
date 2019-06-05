@@ -189,7 +189,13 @@ function drawBar(sorted_data) {
 	$(".explain").show();
 }
 
-function drawTable(sorted_data) {
+function drawTable(sorted_data, data) {
+    // local_data = data
+    local_data = [];
+    for(let a of sorted_data) {
+        // local_data.push({a[0]:a[1]});
+        local_data[a[0]] = a[1];
+	}
 	el = $("#explain_table");
 	for(i=sorted_data.length-1;i>=0;i--) {
 		var color = document.createElement("canvas");
@@ -217,7 +223,7 @@ function drawTable(sorted_data) {
             else {
                 e.target.innerHTML = "remove";
                 var temp1 = el.parent().prev();
-                temp1.html(local_data[temp1.prev().html()])
+                temp1.html(local_data[temp1.prev().html()]);
                 $("#"+temp1.prev().html().replace(" ","_")+"_bar").show();
             }
         };

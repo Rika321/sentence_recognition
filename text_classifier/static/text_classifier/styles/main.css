@@ -38,13 +38,11 @@
 }
 
 body {
-  height: 100%;
-  margin: 0;
+  /* height: 195%; */
+  /* margin: 0; */
   font-family: Arial, Helvetica, Comic Sans MS;
   /* background-image: url("https://www.dealfuel.com/wp-content/uploads/2017/07/CSS-Cloud-Animation-Background.gif"); */
   background-size: cover;
-  /* filter: blur(8px); */
-  /* -webkit-filter: blur(8px); */ */
 }
 /* * { box-sizing: border-box; }
 .bg-image {
@@ -149,78 +147,33 @@ a.active { text-decoration: none; color: #000; font-weight: bold; cursor: text; 
 #angles input, #max { width: 42px; }
 
 
-footer {
 
- .site-footer-container {
-   width: 100vw;
-   background-color: #1181bd;
-   color: white;
-   font-size: 1em;
-   padding: 20px 0;
- }
-
- .site-footer {
-  max-width: -webkit-calc(#{$content-width}*1.75 - (#{$spacing-unit} * 2));
-  max-width:         calc(#{$content-width}*1.75 - (#{$spacing-unit} * 2));
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  margin: auto;
- }
-
- .site-footer h2 {
-   margin-bottom: 10px;
- }
-
- .site-footer .fa {
-   font-size: 2em;
- }
-
- .bottom-line {
-   width: 100vw;
-   background-color: #4e4e4e;
-   color: white;
-   text-align: right;
-   padding: 10px 0;
- }
-
- .bottom-line > * {
-   opacity: 0.7;
-   margin-right: 20px;
-   font-size: 0.9em;
- }
-
- .footer-link {
-  color: #dff0df;
-    opacity: 1.2;
-    transition: all 0.3s;
-    text-decoration: underline;
-
-    /*a:visited {
-      color: #111;
-     }*/
-  a:hover {
-      color: #111;
-      text-decoration: underline;
-  }
-  .social-media-list a:hover {
-      text-decoration: none;
-  }
-  .social-media-list a:hover .username {
-      text-decoration: underline;
-  }
- }
- .footer-social {
-  margin: 5px 5px 5px 5px;
-  color: #dff0df;
-    opacity: 1.2;
-    transition: all 0.3s;
-
-    /*a:visited {
-      color: #11ba11;
-     }*/
-  a:hover {
-      color: #11ba11;
-  }
- }
+/* html, body {
+  height: 100%;
 }
+body {
+  display: flex;
+  flex-direction: column;
+}
+#content {
+  flex: 1 0 auto;
+} */
+.footer {
+  /* position: fixed; */
+  position:fixed;
+  width: 100%;
+  bottom: 0;
+   /* left: 0;
+   bottom: 0;
+   width: 100%;
+  flex-shrink: 0; */
+  color: #922B21 !important;
+  font-family: Comic Sans MS;
+  background-color: #F2D7D5;
+}
+
+/* footer {
+    color: #922B21 !important;
+    font-family: Comic Sans MS;
+    background-color: #F2D7D5;
+} */
