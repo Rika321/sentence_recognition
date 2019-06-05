@@ -211,7 +211,7 @@ function drawTable(sorted_data, data) {
 		$(tr).children("td")[0].append(color);
         $(tr).append("<td><a class=\"btn btn-primary\" "+
             "id=\"hide_feature\">remove</a></td>");
-        var temp = $(tr).children("td")[3];
+        var temp = $(tr).children("td")[3].firstChild;
         temp.onclick = function flip(e) {
             el = $(e.target)
             if(e.target.innerHTML=="remove") {
