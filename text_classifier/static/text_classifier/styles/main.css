@@ -39,7 +39,7 @@
 
 body {
   /* height: 195%; */
-  /* margin: 0; */
+  margin: 0;
   font-family: Arial, Helvetica, Comic Sans MS;
   /* background-image: url("https://www.dealfuel.com/wp-content/uploads/2017/07/CSS-Cloud-Animation-Background.gif"); */
   background-size: cover;
@@ -158,6 +158,11 @@ body {
 #content {
   flex: 1 0 auto;
 } */
+.header{
+    /* position:fixed; */
+    width: 100%;
+}
+
 .footer {
   /* position: fixed; */
   position:fixed;
