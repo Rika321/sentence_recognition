@@ -44,11 +44,13 @@ def transform_data(sentiment, cv_model_name, le_model_name):
     dump(cv, cv_model_name)
 
 def select_feature(sentiment, model_name):
+    ori_num_feat = sentiment.trainX.shape[1]
+    num_feat = ori_num_feat if ori_num_feat < 100 else int(ori_num_feat/4)
     try:
         sk = load(model_name)
         print("continue to use sk model!")
     except:
-        sk = SelectKBest(chi2, k=4000)
+        sk = SelectKBest(chi2, k=num_feat)
         print("create to new sk model!")
     sk.fit(sentiment.trainX, sentiment.trainy)
     sentiment.trainX_select = sk.transform(sentiment.trainX)
@@ -111,6 +113,27 @@ def explain_grams(sentence, cv_model_name, le_model_name, sk_model_name, lr_mode
     except Exception as e:
         print("ERROR",e)
         return None
+
+def explain_grams_list(sentence, cv_model_name, le_model_name, sk_model_name, lr_model_name, hasFreq = True):
+    try:
+        cv = load(cv_model_name)
+        sk = load(sk_model_name)
+        lr = load(lr_model_name)
+        gram_dict = defaultdict(float)
+        feature = cv.get_feature_names()
+        support = sk.get_support(True)
+        sentence_ = cv.transform([sentence])
+        sentence_ = sk.transform(sentence_)
+        for row, col in zip(*sentence_.nonzero()):
+            score = sentence_[row, col]*lr.coef_[0][col]
+            word = feature[support[col]]
+            gram_dict[word] = score
+        gram_dict['_INTERCEPT_'] = lr.intercept_[0]
+        return list(dict(gram_dict).keys()),list(dict(gram_dict).values())
+    except Exception as e:
+        print("ERROR",e)
+        return [],[]
+
 
 
 def update_model(sentence, grams, cv_model_name, le_model_name, sk_model_name, lr_model_name):

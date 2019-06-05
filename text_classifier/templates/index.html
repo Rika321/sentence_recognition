@@ -43,7 +43,8 @@
           <ul class="nav navbar-nav navbar-right">
             <li><a id = "pred_mode"  href = "{% url 'text_classifier:index' %}">PREDICT</a></li>
             <li><a id = "eval_mode"  href = "{% url 'text_classifier:eval_mode' %}">EVALUATE</a></li>
-            <li><a id = "train_mode" href = "{% url 'text_classifier:train_mode' %}">TRAIN</a></li>
+            <li><a id = "train_mode" href = "{% url 'text_classifier:train_mode' %}">BUILD</a></li>
+            <li><a id = "add_mode" href = "{% url 'text_classifier:add_mode' %}">IMPROVE</a></li>
           </ul>
         </div>
       </div>
@@ -60,82 +61,103 @@
     <div class="row">
       <div class="col-md-12">
 
-          <div class="container" >
-              <div class="col-sm-8" style="margin-left:-6%">
-                  <form action="{% url 'text_classifier:apply_model' %}" method="post" enctype="multipart/form-data">
-                       {% csrf_token %}
-                       <label> <font face = "Comic Sans MS" style="color:#000000" size="3">working on {{ data_name }} dataset</font></label> <br>
-                       <font face = "Comic Sans MS">
-                       <div class="input-group select_group">
-                       <select name="sel_data" class="select form-control">
-                           {%for dataset in dataset_name %}
-                           {% if devname == dataset %}
-                            <option value={{dataset}} selected="selected">{{dataset}}</option>
-                           {% else %}
-                            <option value={{dataset}}>{{dataset}}</option>
-                           {% endif %}
-                           {% endfor %}
-                       </select>
-                       <span class="input-group-btn">
-                       <button type="submit" class="btn btn-primary">SELECT</button>
-                       </span>
-                       </div>
-                       </font>
-                   </form>
-              </div>
-              <div class="col-sm-4" style="margin-left:-37%">
-                  {% if classes_.1 %}
-                  <label> <font face = "Comic Sans MS" style="color:#ff1a1a" size="5.5">{{ classes_.0 }}</font></label>
-                  <label> <font face = "Comic Sans MS" style="color:#000000;margin-left:2%;margin-right:2%" size="2">VS </font></label>
-                  <label> <font face = "Comic Sans MS" style="color:#33ff33" size="5.5">{{ classes_.1 }}</font></label> <br/>
-                  {% endif %}
-              </div>
+          <div >
+              <form action="{% url 'text_classifier:apply_model' %}" method="post" enctype="multipart/form-data">
+                   {% csrf_token %}
+
+                   {% if data_name %}
+                   <label> <font face = "Comic Sans MS" style="color:#1f9680" size="3">working on</font></label>
+                   <label> <font face = "Comic Sans MS" style="color:#42117a" size="4">{{ data_name }} </font></label>
+                   <label> <font face = "Comic Sans MS" style="color:#1f9680" size="3">dataset</font></label> <br>
+
+                   {% else %}
+                    <label> <font face = "Comic Sans MS" style="color:#1f9680" size="3">not working on dataset</font></label> <br>
+                   {% endif %}
+                   <font face = "Comic Sans MS">
+                   <div class="input-group select_group">
+                   <select name="sel_data" class="select form-control">
+                       {%for dataset in dataset_name %}
+                       {% if devname == dataset %}
+                        <option selected="selected" value={{dataset}}>{{dataset}}</option>
+                       {% else %}
+                        <option value={{dataset}}>{{dataset}}</option>
+                       {% endif %}
+                       {% endfor %}
+                   </select>
+                   <span class="input-group-btn">
+                   <button type="submit" class="btn btn-primary">SELECT</button>
+                   </span>
+                   </div>
+                   </font>
+               </form>
+               {% if classes_.1 %}
+               <label> <font face = "Comic Sans MS" style="color:#ff1a1a" size="5.5">{{ classes_.0 }}</font></label>
+               <label> <font face = "Comic Sans MS" style="color:#000000;margin-left:2%;margin-right:2%" size="2">VS </font></label>
+               <label> <font face = "Comic Sans MS" style="color:#33ff33" size="5.5">{{ classes_.1 }}</font></label> <br/>
+               {% endif %}
           </div>
           <br/>
 
           {% if mode == 'train_mode' %}
               <div  class="form-group">
                   <br/>
-                  {% if total_sample %}
-                    <p>we have {{ total_sample }} examples!</p>
-                    <form action="{% url 'text_classifier:simple_train' %}" method="post" enctype="multipart/form-data">
-                          {% csrf_token %}
-                          <button type="submit" class="btn btn-primary">TRAIN!</button>
-                    </form>
-                    <br/>
-                    <form action="{% url 'text_classifier:simple_add' %}" method="post" enctype="multipart/form-data">
-                         {% csrf_token %}
-                         <!-- <label for="{{form.phrase.id_for_label}}"> </label><br/> -->
-                         <label><font face = "Comic Sans MS" style="color:#000000" size="5">Try to type in your Sentence</font></label>
-                         <br/>
-                         <input id="input_text" type="text" name="sentence" value="{{ sentence_text }}"><br/>
-                         <label for="{{form.phrase.id_for_label}}">Select a label</label>
-                         <select name="label">
-                           <option value="NEGATIVE"></option>
-                           <option value="NEGATIVE">NEGATIVE</option>
-                           <option value="POSITIVE">POSITIVE</option>
-                         </select>
-                         <br/>
-                         <button type="submit" class="btn btn-primary">ADD</button>
-                     </form>
+                  <label><font face = "Comic Sans MS" style="color:#8a23b2" size="3">Plz Upload your tsv Formt Dataset: </font></label>
+                  <label><font face = "Comic Sans MS" style="color:#0f5953" size="3">"Label</font></label>
+                  <label><font face = "Comic Sans MS" style="color:#100e70" size="3">\t</font></label>
+                  <label><font face = "Comic Sans MS" style="color:#661666" size="3">sentence"</font></label> <br/>
 
-                  {% else %}
-                  {% endif %}
 
-                  <br/>
-                  <br/>
-
-                  <form action="{% url 'text_classifier:simple_upload' %}" method="post" enctype="multipart/form-data">
+                  <form id = "upload_form_train" action="{% url 'text_classifier:simple_upload' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <input type="file" name="labeled_tsv_file">
-                    <input id="input_text" type="text" name="new_devname" value="{{ new_devname }}"><br/>
-                    <label><font face = "Comic Sans MS" style="color:#000000" size="5">classifier name </font></label> <br/>
-                    <button type="submit" class="btn btn-primary">UPLOAD</button>
+                    <input id="upload_train_file" type="file" name="labeled_tsv_file">
+                    <label><font face = "Comic Sans MS" style="color:#875de2" size="3">Plz name your dataset: </font></label>
+                    <input id="upload_text" type="text" name="new_devname" value="{{ new_devname }}"><br/>
+                    <button id="submit_train_text" type="submit" class="btn btn-primary">UPLOAD</button>
+                    <input type="button" class="btn btn-primary" value="CLEAR" onclick="javascript:eraseText();">
+                    <input type="button" class="btn btn-primary" value="RANDOM" onclick="javascript:randomText();">
                   </form>
+
+                  <script type="text/javascript">
+                      $("#upload_form_train").ready(function() {
+                          function check() {
+                              var filled = true;
+                              if(document.getElementById("upload_text").value == ""){
+                                  filled = false;
+                              }
+                              if(document.getElementById("upload_train_file").files.length == 0){
+                                  filled = false;
+                              }
+                              console.log("test");
+                              if (filled) { // Check whether any of the fields are empty (or, in the radio button's case, if one is selected, and enable/disable the button accordingly
+                                    document.getElementById("submit_train_text").disabled = false;
+                               } else {
+                                    document.getElementById("submit_train_text").disabled = true;
+                               }
+                          }
+                          window.addEventListener("keyup", check);
+                          window.addEventListener("click", check);
+                      });
+
+                      var sentence_list = {{companies | safe}};
+                      function randomText() {
+                          var sentence = sentence_list[Math.floor(Math.random()*sentence_list.length)];
+                          document.getElementById("upload_text").value = sentence;
+                      }
+                      function eraseText() {
+                          document.getElementById("upload_text").value = "";
+                      }
+                  </script>
                   <!-- {% if read_sample %}
                     <p>read {{ read_sample }} examples</p>
                   {% endif %} -->
-                   <p><a href="{% url 'text_classifier:train_mode' %}"> </a></p>
+                   {% if total_sample %}
+                     <label><font face = "Comic Sans MS" style="color:#22cc3c" size="3">we have {{ total_sample }} examples!</font></label> <br/>
+                     <form action="{% url 'text_classifier:simple_train' %}" method="post" enctype="multipart/form-data">
+                           {% csrf_token %}
+                           <button type="submit" style="#22cc3c" class="btn btn-primary">TRAIN!</button>
+                     </form>
+                   {% else %}
+                   {% endif %}
 
 
                   {% if train_acc %}
@@ -148,7 +170,7 @@
                             <div class="container" style="border:solid 0px #2E86C1;">
                                 <div class="container" style="margin-top:2%;margin-left:10%;margin-right:5%">
                                     <div class="col-sm-4" style="margin-top:4%">
-                                      <font face = "Comic Sans MS" size="25" style="color:#99CC33"> {{ total_sample }} </font>
+                                      <font face = "Comic Sans MS" size="20" style="color:#99CC33"> {{ total_sample }} </font>
                                     </div>
                                     <div class="col-sm-4" >
                                       <div class="circle" id="circles_acc" ></div>
@@ -168,8 +190,6 @@
                                     <div class="col-sm-4">
                                       <font face = "Comic Sans MS" style="color:#7D3C98" size="15">F1Score</font>
                                     </div>
-
-
                                 </div>
                             </div>
 
@@ -228,15 +248,33 @@
                   }
               </script>
 
-
           {% elif mode == 'eval_mode' %}
 
-                  <form class="form-horizontal" action="{% url 'text_classifier:simple_eval' %}" method="post" enctype="multipart/form-data">
+                  <form id = "upload_form_eval" class="form-horizontal" action="{% url 'text_classifier:simple_eval' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <input type="file" name="up_dev_file">
+                    <input id = "upload_eval_file" type="file" name="up_dev_file">
                     <!-- <input id="input_text" type="text" name="up_tsv_file" value="{{up_tsv_file}}"><br/> -->
-                    <button type="submit" class="btn btn-primary">EVALUATE</button>
+                    <button id = "submit_eval_text" type="submit" class="btn btn-primary">EVALUATE</button>
                   </form>
+
+                  <script type="text/javascript">
+                      $("#upload_form_eval").ready(function() {
+                          function check() {
+                              var filled = true;
+                              if(document.getElementById("upload_eval_file").files.length == 0){
+                                  filled = false;
+                              }
+                              if (filled) { // Check whether any of the fields are empty (or, in the radio button's case, if one is selected, and enable/disable the button accordingly
+                                    document.getElementById("submit_eval_text").disabled = false;
+                               } else {
+                                    document.getElementById("submit_eval_text").disabled = true;
+                               }
+                          }
+                          window.addEventListener("keyup", check);
+                          window.addEventListener("click", check);
+                      });
+                  </script>
+
 
                   {% if F1Score %}
                       <font face = "Comic Sans MS" style="color:#336699" size="20">Performance Statistics</font>
@@ -275,7 +313,45 @@
                       <script src="{% static "text_classifier/js/circle.generate.js" %}"></script>
                   {% endif %}
 
+        {% elif mode == 'add_mode' %}
+                  <br/>
+                  <label><font face = "Comic Sans MS" style="color:#3ee3f2" size="4">Can you help us improve the dataset?</font></label> </br>
 
+                  {% if total_sample %}
+                     <label><font face = "Comic Sans MS" style="color:#22cc3c" size="4">Now we have {{ total_sample }} examples!</font></label>
+
+                       <form class="form-horizontal" action="{% url 'text_classifier:simple_add' %}" method="post">
+                           <div  class="form-group">
+                             {% csrf_token %}
+                             <div class="review">
+                             <label for="input_text">Type a sentence</label>
+                             <textarea id="add_text" class="form-control" rows="6" name="sentence" value="{{ sentence_text }}"></textarea>
+                             </div>
+                             <label for="{{form.phrase.id_for_label}}">Select a label</label>
+                             <select name="label">
+                               <option value={{classes_.0}}>{{classes_.0}}</option>
+                               <option value={{classes_.1}}>{{classes_.1}}</option>
+                             </select>
+                             <button type="submit" class="btn btn-primary">ADD</button>
+                             <input type="button" class="btn btn-primary" value="CLEAR" onclick="javascript:eraseText();">
+                             <input type="button" class="btn btn-primary" value="RANDOM" onclick="javascript:randomText();">
+                           </div>
+                       </form>
+                       <script type="text/javascript">
+                           var sentence_list = {{sentence_list | safe}};
+                           function randomText() {
+                               var sentence = sentence_list[Math.floor(Math.random()*sentence_list.length)];
+                               document.getElementById("add_text").value = sentence;
+                           }
+                           function eraseText() {
+                               document.getElementById("add_text").value = "";
+                           }
+                       </script>
+
+
+                  {% else %}
+                        <label><font face = "Comic Sans MS" style="color:#4c9bdb" size="5">Plz Select your Dataset</font></label>
+                  {% endif %}
          {% else %}
              <!-- <p> Analyzing Bag: {{mode}}</p> -->
           {% endif %}
@@ -284,20 +360,23 @@
         <form class="form-horizontal center">
         {% if label %}
           <div  class="form-group ">
-            <!-- <p id='sentence'> Analyzing sentence: {{sentence}}</p> -->
-            <font face = "Comic Sans MS" size="5" id='sentence'>Analyzing sentence: {{sentence}}</font>
+            <a class="btn btn-primary" href="{% url 'text_classifier:index'%}">Try Again</a>
+            </br>
+            <!-- <p id='sentence'> Analyzing sentence: #5909b5{{sentence}}</p> -->
+            <font face = "Comic Sans MS" size="5" style="color:#5909b5;">Analyzing sentence:</font>
+            <font face = "Comic Sans MS" size="5"> <span id='sentence'>{{sentence}}</span></font>
             <br>
-            <font face = "Comic Sans MS" size="5" id='sentence'>This sentence is :</font>
+            <font face = "Comic Sans MS" size="5" style="color:#5909b5;">This sentence is :</font>
             <font face = "Comic Sans MS" size="5" id='sentence_label'> {{label.0}}</font>
             <!-- <p> This sentence is : {{label}}</p> -->
                 <span id="probability" style="display: none;">{{sent_conf}}</span>
                 <div id= "ppBar" style="max-height: 370px; max-width: 720px;">
                     <input type="hidden" id="sent_conf" name="sent_conf" value="{{ sent_conf }}">
-                    <h4>{{class_a.0}}</h4>
+                    <h4 style="color:red;">{{class_a.0}}</h4>
                     <div id="myProgress1">
                       <div id="myBar1">0%</div>
                     </div>
-                    <h4>{{class_b.0}}</h4>
+                    <h4 style="color:green;">{{class_b.0}}</h4>
                     <div id="myProgress2">
                       <div id="myBar2">0%</div>
                     </div>
@@ -318,14 +397,15 @@
                     });
                 </script>
 
-                <a class="btn btn-primary" id="explain_btn">explain</a>
+                <!-- <a class="btn btn-primary" id="explain_btn">explain</a>
                 <a class="btn btn-primary" id="plot_btn">plot</a>
-                <a class="btn btn-primary" href="{% url 'text_classifier:index'%}">main page</a>
+                <a class="btn btn-primary" href="{% url 'text_classifier:index'%}">main page</a> -->
                 <a class="btn btn-primary" id="hide_bubble">hide bubble</a>
-
                 <div class="bubble center" id="bubble_pred">
+                    <p>
+                    <font face = "Comic Sans MS" size="5" style="color:#5909b5;">Most Significant Words to this label:</font>
+                    </p>
                 </div>
-
                 <script src="{% static "text_classifier/js/bubble.utility.js" %}"></script>
                 <script type="text/javascript">
                     var topA_val = {{topA_val|safe}};
@@ -339,9 +419,12 @@
                 </script>
 
             <!-- <input type=button class="btn btn-primary" value="Previous Page" onClick="javascript:history.go(-1);"> -->
-            <div class="explain center" style="display: none;">
+            <p> </p>
             <a class="btn btn-primary" id="hide_table">hide table</a>
-            <a class="btn btn-primary" id="hide_explain">hide</a>
+            <div id="explain_center1" class="explain center" style="display: none;">
+                <p>
+                <font face = "Comic Sans MS" size="5" style="color:#5909b5;">Contribution Visulization!</font>
+                </p>
 
               <div class="explain-bar" id="bar_plus">
               <img class="plus_minus_sign" width="25px" vertical-align="middle" src={% static "text_classifier/img/plus_sign.png" %}>
@@ -364,13 +447,33 @@
               </div>
             </div>
 
-            <!-- adjustableplot -->
-            <div class="plot center" style="display: none;">
-                <a class="btn btn-primary" id="hide_plot">hide_plot</a>
-                <a class="btn btn-primary" id="save_plot">save_plot</a>
+            <p> </p>
+            <a class="btn btn-primary" id="hide_plot">hide plot</a>
+            <a class="btn btn-primary" id="save_plot">Apply Change</a>
+            <div id="explain_center2" class="plot center" style="display: none;">
+                <p>
+                <font face = "Comic Sans MS" size="5" style="color:#5909b5;">Feel Free To Drag&Improve the Model!</font>
+                </p>
                 <div id="chartContainer" style="max-height: 370px; max-width: 1020px;"></div>
             </div>
           </div>
+          <script src="{% static "text_classifier/js/explain.utility.js" %}"></script>
+          <script type="text/javascript">
+              var keylist = {{explainK|safe}}
+              var vallist = {{explainV|safe}}
+              $("#explain_center1").ready(function() {
+                  sorted_data = new Array(keylist.length);
+                  var i=0;
+      			  for(i=0;i<sorted_data.length;i++) {
+      			      sorted_data[i] = new Array(keylist[i],vallist[i]);
+      			  }
+      			  sorted_data = sorted_data.sort(compare);
+      			  drawBar(sorted_data);
+      			  barColor = drawTable(sorted_data);
+                  fontColor(sorted_data, barColor);
+                  drawAdjustableBar(sorted_data);
+              });
+          </script>
         {% else %}
         {% endif %}
        </form>
@@ -380,7 +483,6 @@
   </div><!-- /container -->
   <!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
   <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> -->
-  <script src="{% static "text_classifier/js/explain.utility.js" %}"></script>
 </body>
 <!-- <footer>
     <h1>Related Word Bubble</h1>

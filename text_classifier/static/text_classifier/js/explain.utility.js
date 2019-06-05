@@ -47,7 +47,7 @@ $.ajaxSetup({
 })
 
 var send = {
-	sentence: $("#sentence").text().split(": ")[1]
+	sentence: $("#sentence").textContent
 }
 
 var sorted_data;
@@ -94,9 +94,9 @@ $(document).on("click", "#explain_btn", function(e) {
 				sorted_data[i] = new Array(keys[i],data[keys[i]]);
 			}
 			sorted_data = sorted_data.sort(compare);
-			drawBar();
-			drawTable();
-            fontColor();
+			drawBar(sorted_data);
+			drawTable(sorted_data);
+            fontColor(sorted_data);
 		},
 	    beforeSend: function(xhr, settings) {
 	        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url))
@@ -125,7 +125,7 @@ function getColorByBaiFenBi(bili){
     return "rgb("+r+","+g+","+b+")";
 }
 
-function drawBar() {
+function drawBar(sorted_data) {
     var barContext = new Array($("#bar_plus"), $("#bar_minus"));
 	var len = 0;
 	var totalLen = $("#container").width()-200;
@@ -189,7 +189,7 @@ function drawBar() {
 	$(".explain").show();
 }
 
-function drawTable() {
+function drawTable(sorted_data) {
 	el = $("#explain_table");
 	for(i=sorted_data.length-1;i>=0;i--) {
 		var color = document.createElement("canvas");
@@ -224,12 +224,15 @@ function drawTable() {
 
 		el.append(tr);
 	}
+    return barColor;
 }
 
-function fontColor() {
-    var el = $("#sentence");
-    var sentence = send["sentence"].split(" ");
-    el.html("Analyzing sentence: ");
+function fontColor(sorted_data, barColor) {
+    el = $("#sentence");
+    // var sentence = send["sentence"].split(" ");
+    var sentence = document.getElementById("sentence").textContent.split(" ");
+    el.html("");
+    console.log(sentence);
     for(let a of sentence) {
         var temp;
         var ch = a.charAt(a.length-1)
@@ -302,9 +305,9 @@ function drawAdjustableBar(sorted_data) {
 
     var chart = new CanvasJS.Chart("chartContainer",
     {
-        title: {
-            text: "Gram Analysis",
-        },
+        // title: {
+        //     text: "Gram Analysis",
+        // },
         data: [{
     		type: "column",
     		legendText: "Individual Word Contribution",
@@ -410,19 +413,28 @@ $(document).on("click", "#hide_explain", function(e) {
 });
 
 $(document).on("click", "#hide_table", function(e) {
-    var el = $("#explain_table_whole")
+    var el = $("#explain_center1")
     if(el.is(':hidden')) {
-         $("#explain_table_whole").show();
+         $("#explain_center1").show();
          e.target.innerHTML = "hide table";
      }
      else {
-        $("#explain_table_whole").hide();
+        $("#explain_center1").hide();
         e.target.innerHTML = "show table";
     }
 });
 
 $(document).on("click", "#hide_plot", function(e) {
-    $(".plot").hide();
+    // $(".plot").hide();
+    var el = $("#explain_center2")
+    if(el.is(':hidden')) {
+         $("#explain_center2").show();
+         e.target.innerHTML = "hide plot";
+     }
+     else {
+        $("#explain_center2").hide();
+        e.target.innerHTML = "show plot";
+    }
 });
 
 $(document).on("click", "#save_plot", function(e) {
