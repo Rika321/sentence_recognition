@@ -250,6 +250,14 @@
 
           {% elif mode == 'eval_mode' %}
 
+                  <p>
+                  <font face = "Comic Sans MS" size="5" style="color:#099691;">Use DEV dataset to evaluate the Model!</font>
+                  </p>
+                  <label><font face = "Comic Sans MS" style="color:#8a23b2" size="3">Plz Upload your tsv Formt Dataset: </font></label>
+                  <label><font face = "Comic Sans MS" style="color:#0f5953" size="3">"Label</font></label>
+                  <label><font face = "Comic Sans MS" style="color:#100e70" size="3">\t</font></label>
+                  <label><font face = "Comic Sans MS" style="color:#661666" size="3">sentence"</font></label> <br/>
+
                   <form id = "upload_form_eval" class="form-horizontal" action="{% url 'text_classifier:simple_eval' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input id = "upload_eval_file" type="file" name="up_dev_file">

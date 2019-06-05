@@ -56,14 +56,14 @@ def apply_model(request):
     random_sentence_list = []
     total_sample, classes_ = 0, None
     try:
-        total_sample, classes_ = count_labeled_examples(devname+"/labeled_collection.tsv")
-        le_model_name = devname+"/le.joblib"
-        le = load(le_model_name)
-        classes_=le.classes_
         trigram_model_name = devname+"/trigram.file"
         with open(trigram_model_name, "r") as f:
             for line in f:
                 random_sentence_list.append(line.strip())
+        total_sample, classes_ = count_labeled_examples(devname+"/labeled_collection.tsv")
+        le_model_name = devname+"/le.joblib"
+        le = load(le_model_name)
+        classes_=le.classes_
     except:
         pass
     context = {
