@@ -21,14 +21,17 @@ import json
 def get_datasets(isTrained=True):
     print(os.listdir("data"))
     datasets = [""]
-    if isTrained:
-        for dataset_name in os.listdir("data"):
-            if len(dataset_name)<=10 and dataset_name[-10:]!="_untrained":
-                datasets.append(dataset_name)
-    else:
-        for dataset_name in os.listdir("data"):
-            if len(dataset_name)>10 and dataset_name[-10:]=="_untrained":
-                datasets.append(dataset_name)
+    try:
+        if isTrained:
+            for dataset_name in os.listdir("data"):
+                if dataset_name[-10:]!="_untrained":
+                    datasets.append(dataset_name)
+        else:
+            for dataset_name in os.listdir("data"):
+                if dataset_name[-10:]=="_untrained":
+                    datasets.append(dataset_name)
+    except:
+        pass
     return datasets
 
 def get_dataname(devname):
