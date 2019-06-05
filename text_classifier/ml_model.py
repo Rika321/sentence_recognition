@@ -2,7 +2,6 @@
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn import preprocessing
-from flask import Flask, request
 import numpy as np
 from scipy.sparse import vstack
 from sklearn.linear_model import LogisticRegression
